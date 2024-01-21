@@ -44,8 +44,8 @@ add_action('wp_footer', 'intlCalen');
 
 function intlCalen_settings() {
     add_options_page(
-        'SK Jalali Settings',
-        'SK Jalali',
+        'Intl Calendar Settings',
+        'Intl Calendar',
         'manage_options',
         'intlCalen',
         'intlCalen_options_page'
@@ -55,7 +55,7 @@ function intlCalen_settings() {
 function intlCalen_options_page() {
     ?>
     <div class="wrap">
-        <h1>SK Jalali Settings</h1>
+        <h1>Intl Calendar Settings</h1>
         <form method="post" action="options.php">
             <?php
             settings_fields('intlCalen_settings');
@@ -251,7 +251,7 @@ function intlCalen_day_format_callback() {
     <select name="intlCalen_day_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="numeric"<?php selected($options, 'numeric'); ?>>Numeric</option>
-        <option value="long"<?php selected($options, 'long'); ?>>Long</option>
+        <option value="2-digit"<?php selected($options, '2-digit'); ?>>2-digit</option>
     </select>
     <?php
 }
