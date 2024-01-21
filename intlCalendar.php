@@ -2,20 +2,21 @@
 /*
 Plugin Name: WP Intl Calendar
 Description: this plugin converts wordpress dates and times to all other calendars available in JS Intl method (just Jalali for now)
-Version: 1.0
+Version: 1.0 Beta
 Author: Mohammad Anbarestany
 */
 
-function sk_jalali() {
-    $year_format = get_option('sk_jalali_year_format', '2-digit');
-    $month_format = get_option('sk_jalali_month_format', 'numeric');
-    $day_format = get_option('sk_jalali_day_format', 'numeric');
-    $weekday_format = get_option('sk_jalali_weekday_format', 'short');
-    $hour_format = get_option('sk_jalali_hour_format', 'numeric');
-    $minute_format = get_option('sk_jalali_minute_format', 'numeric');
-    $timeZoneName_format = get_option('sk_jalali_timeZoneName_format', 'short');
-    $timeZone_format = get_option('sk_jalali_timeZone_format', 'Asia/Tehran');
-    $hour12_format = get_option('sk_jalali_hour12_format', 'false');
+function intlCalen() {
+    $year_format = get_option('intlCalen_year_format', '2-digit');
+    $month_format = get_option('intlCalen_month_format', 'numeric');
+    $day_format = get_option('intlCalen_day_format', 'numeric');
+    $weekday_format = get_option('intlCalen_weekday_format', 'short');
+    $hour_format = get_option('intlCalen_hour_format', 'numeric');
+    $minute_format = get_option('intlCalen_minute_format', 'numeric');
+    $timeZoneName_format = get_option('intlCalen_timeZoneName_format', 'short');
+    $timeZone_format = get_option('intlCalen_timeZone_format', 'Asia/Tehran');
+    $hour12_format = get_option('intlCalen_hour12_format', 'false');
+	$locale = get_option('intlCalen_locale', 'fa-IR');
 
     echo '<script type="text/javascript">
 	let options = {';
@@ -29,7 +30,7 @@ function sk_jalali() {
         if($timeZone_format != '') {echo "timeZone: '$timeZone_format',";}
         if($hour12_format != '') {echo "hour12: '$hour12_format',";}
     echo '};
-    const formatter = new Intl.DateTimeFormat("fa-IR", options);
+    const formatter = new Intl.DateTimeFormat("'. $locale .'", options);
 
     document.querySelectorAll("time").forEach(time => {
         const gregorianDate = new Date(time.dateTime);
@@ -39,26 +40,26 @@ function sk_jalali() {
 </script>';
 }
 
-add_action('wp_footer', 'sk_jalali');
+add_action('wp_footer', 'intlCalen');
 
-function sk_jalali_settings() {
+function intlCalen_settings() {
     add_options_page(
         'SK Jalali Settings',
         'SK Jalali',
         'manage_options',
-        'sk_jalali',
-        'sk_jalali_options_page'
+        'intlCalen',
+        'intlCalen_options_page'
     );
 }
 
-function sk_jalali_options_page() {
+function intlCalen_options_page() {
     ?>
     <div class="wrap">
         <h1>SK Jalali Settings</h1>
         <form method="post" action="options.php">
             <?php
-            settings_fields('sk_jalali_settings');
-            do_settings_sections('sk_jalali_settings');
+            settings_fields('intlCalen_settings');
+            do_settings_sections('intlCalen_settings');
             submit_button();
             ?>
         </form>
@@ -66,140 +67,163 @@ function sk_jalali_options_page() {
     <?php
 }
 
-function sk_jalali_settings_init() {
+function intlCalen_settings_init() {
     add_settings_section(
-        'sk_jalali_date_format_section',
+        'intlCalen_date_format_section',
         'Date Format',
-        'sk_jalali_date_format_section_callback',
-        'sk_jalali_settings'
+        'intlCalen_date_format_section_callback',
+        'intlCalen_settings'
     );
 
     add_settings_field(
-        'sk_jalali_year_format',
+        'intlCalen_year_format',
         'Year Format',
-        'sk_jalali_year_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_year_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     add_settings_field(
-        'sk_jalali_month_format',
+        'intlCalen_month_format',
         'Month Format',
-        'sk_jalali_month_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_month_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     add_settings_field(
-        'sk_jalali_day_format',
+        'intlCalen_day_format',
         'Day Format',
-        'sk_jalali_day_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_day_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     add_settings_field(
-        'sk_jalali_Weekday_format',
+        'intlCalen_Weekday_format',
         'Weekday Format',
-        'sk_jalali_Weekday_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_Weekday_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     add_settings_field(
-        'sk_jalali_hour_format',
+        'intlCalen_hour_format',
         'Hour Format',
-        'sk_jalali_hour_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_hour_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     add_settings_field(
-        'sk_jalali_minute_format',
+        'intlCalen_minute_format',
         'Minute Format',
-        'sk_jalali_minute_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_minute_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     add_settings_field(
-        'sk_jalali_timeZoneName_format',
+        'intlCalen_timeZoneName_format',
         'TimeZoneName Format',
-        'sk_jalali_timeZoneName_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_timeZoneName_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     add_settings_field(
-        'sk_jalali_timeZone_format',
+        'intlCalen_timeZone_format',
         'TimeZone Format',
-        'sk_jalali_timeZone_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_timeZone_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     add_settings_field(
-        'sk_jalali_hour12_format',
+        'intlCalen_hour12_format',
         'Hour12 Format',
-        'sk_jalali_hour12_format_callback',
-        'sk_jalali_settings',
-        'sk_jalali_date_format_section'
+        'intlCalen_hour12_format_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
+    );
+	
+	add_settings_field(
+        'intlCalen_locale',
+        'Locale',
+        'intlCalen_locale_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_year_format'
+        'intlCalen_settings',
+        'intlCalen_year_format'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_month_format'
+        'intlCalen_settings',
+        'intlCalen_month_format'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_day_format'
+        'intlCalen_settings',
+        'intlCalen_day_format'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_weekday_format'
+        'intlCalen_settings',
+        'intlCalen_weekday_format'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_hour_format'
+        'intlCalen_settings',
+        'intlCalen_hour_format'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_minute_format'
+        'intlCalen_settings',
+        'intlCalen_minute_format'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_timeZoneName_format'
+        'intlCalen_settings',
+        'intlCalen_timeZoneName_format'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_timeZone_format'
+        'intlCalen_settings',
+        'intlCalen_timeZone_format'
     );
 
     register_setting(
-        'sk_jalali_settings',
-        'sk_jalali_hour12_format'
+        'intlCalen_settings',
+        'intlCalen_hour12_format'
+    );
+	
+	register_setting(
+        'intlCalen_settings',
+        'intlCalen_locale'
     );
 }
 
-function sk_jalali_date_format_section_callback() {
+function intlCalen_date_format_section_callback() {
     echo '<p>Select the format for each date component.</p>';
 }
 
-function sk_jalali_year_format_callback() {
-    $options = get_option('sk_jalali_year_format');
+function intlCalen_locale_callback() {
+    $options = get_option('intlCalen_locale');
     ?>
-    <select name="sk_jalali_year_format">
+    <select name="intlCalen_locale">
+        <option value="fa-IR"<?php selected($options, 'fa-IR'); ?>>fa-IR</option>
+        <option value="fa-AF"<?php selected($options, 'fa-AF'); ?>>fa-AF</option>
+    </select>
+    <?php
+}
+
+function intlCalen_year_format_callback() {
+    $options = get_option('intlCalen_year_format');
+    ?>
+    <select name="intlCalen_year_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="numeric"<?php selected($options, 'numeric'); ?>>Numeric</option>
         <option value="2-digit"<?php selected($options, '2-digit'); ?>>2-digit</option>
@@ -207,10 +231,10 @@ function sk_jalali_year_format_callback() {
     <?php
 }
 
-function sk_jalali_month_format_callback() {
-    $options = get_option('sk_jalali_month_format');
+function intlCalen_month_format_callback() {
+    $options = get_option('intlCalen_month_format');
     ?>
-    <select name="sk_jalali_month_format">
+    <select name="intlCalen_month_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="numeric"<?php selected($options, 'numeric'); ?>>Numeric</option>
         <option value="long"<?php selected($options, 'long'); ?>>Long</option>
@@ -221,10 +245,10 @@ function sk_jalali_month_format_callback() {
     <?php
 }
 
-function sk_jalali_day_format_callback() {
-    $options = get_option('sk_jalali_day_format');
+function intlCalen_day_format_callback() {
+    $options = get_option('intlCalen_day_format');
     ?>
-    <select name="sk_jalali_day_format">
+    <select name="intlCalen_day_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="numeric"<?php selected($options, 'numeric'); ?>>Numeric</option>
         <option value="long"<?php selected($options, 'long'); ?>>Long</option>
@@ -232,10 +256,10 @@ function sk_jalali_day_format_callback() {
     <?php
 }
 
-function sk_jalali_weekday_format_callback() {
-    $options = get_option('sk_jalali_weekday_format');
+function intlCalen_weekday_format_callback() {
+    $options = get_option('intlCalen_weekday_format');
     ?>
-    <select name="sk_jalali_weekday_format">
+    <select name="intlCalen_weekday_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="long"<?php selected($options, 'long'); ?>>Long</option>
         <option value="short"<?php selected($options, 'short'); ?>>short</option>
@@ -244,10 +268,10 @@ function sk_jalali_weekday_format_callback() {
     <?php
 }
 
-function sk_jalali_hour_format_callback() {
-    $options = get_option('sk_jalali_hour_format');
+function intlCalen_hour_format_callback() {
+    $options = get_option('intlCalen_hour_format');
     ?>
-    <select name="sk_jalali_hour_format">
+    <select name="intlCalen_hour_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="numeric"<?php selected($options, 'numeric'); ?>>Numeric</option>
         <option value="2-digit"<?php selected($options, '2-digit'); ?>>2-digit</option>
@@ -255,10 +279,10 @@ function sk_jalali_hour_format_callback() {
     <?php
 }
 
-function sk_jalali_minute_format_callback() {
-    $options = get_option('sk_jalali_minute_format');
+function intlCalen_minute_format_callback() {
+    $options = get_option('intlCalen_minute_format');
     ?>
-    <select name="sk_jalali_minute_format">
+    <select name="intlCalen_minute_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="numeric"<?php selected($options, 'numeric'); ?>>Numeric</option>
         <option value="2-digit"<?php selected($options, '2-digit'); ?>>2-digit</option>
@@ -266,10 +290,10 @@ function sk_jalali_minute_format_callback() {
     <?php
 }
 
-function sk_jalali_timeZoneName_format_callback() {
-    $options = get_option('sk_jalali_timeZoneName_format');
+function intlCalen_timeZoneName_format_callback() {
+    $options = get_option('intlCalen_timeZoneName_format');
     ?>
-    <select name="sk_jalali_timeZoneName_format">
+    <select name="intlCalen_timeZoneName_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="long"<?php selected($options, 'long'); ?>>Long</option>
         <option value="short"<?php selected($options, 'short'); ?>>short</option>
@@ -277,10 +301,10 @@ function sk_jalali_timeZoneName_format_callback() {
     <?php
 }
 
-function sk_jalali_timeZone_format_callback() {
-    $options = get_option('sk_jalali_timeZone_format');
+function intlCalen_timeZone_format_callback() {
+    $options = get_option('intlCalen_timeZone_format');
     ?>
-    <select name="sk_jalali_timeZone_format">
+    <select name="intlCalen_timeZone_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="Asia/Tehran"<?php selected($options, 'Asia/Tehran'); ?>>Asia/Tehran</option>
         <option value="Asia/Kabul"<?php selected($options, 'Asia/Kabul'); ?>>Asia/Kabul</option>
@@ -288,10 +312,10 @@ function sk_jalali_timeZone_format_callback() {
     <?php
 }
 
-function sk_jalali_hour12_format_callback() {
-    $options = get_option('sk_jalali_hour12_format');
+function intlCalen_hour12_format_callback() {
+    $options = get_option('intlCalen_hour12_format');
     ?>
-    <select name="sk_jalali_hour12_format">
+    <select name="intlCalen_hour12_format">
         <option value=""<?php selected($options, ''); ?>>Disable</option>
         <option value="true"<?php selected($options, 'true'); ?>>true</option>
         <option value="false"<?php selected($options, 'false'); ?>>false</option>
@@ -299,5 +323,5 @@ function sk_jalali_hour12_format_callback() {
     <?php
 }
 
-add_action('admin_menu', 'sk_jalali_settings');
-add_action('admin_init', 'sk_jalali_settings_init');
+add_action('admin_menu', 'intlCalen_settings');
+add_action('admin_init', 'intlCalen_settings_init');
