@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Intl Calendar
 Description: this plugin converts wordpress dates and times to all other calendars available in JS Intl method (just Jalali for now)
-Version: 1.0 Beta
+Version: 1.01 Beta
 Author: Mohammad Anbarestany
 */
 
@@ -212,10 +212,20 @@ function intlCalen_date_format_section_callback() {
 
 function intlCalen_locale_callback() {
     $options = get_option('intlCalen_locale');
+    $localeCodes = array(
+        'fa-IR' => 'Persian (Iran)',
+        'fa-AF' => 'Persian (Afghanistan)',
+        // Add more locale codes here
+    );
     ?>
     <select name="intlCalen_locale">
-        <option value="fa-IR"<?php selected($options, 'fa-IR'); ?>>fa-IR</option>
-        <option value="fa-AF"<?php selected($options, 'fa-AF'); ?>>fa-AF</option>
+        <?php
+        foreach ($localeCodes as $code => $label) {
+            ?>
+            <option value="<?php echo $code; ?>"<?php selected($options, $code); ?>><?php echo $label; ?></option>
+            <?php
+        }
+        ?>
     </select>
     <?php
 }
