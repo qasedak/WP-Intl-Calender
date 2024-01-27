@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Intl Calendar
 Description: this plugin converts wordpress dates and times to all other calendars available in JS Intl method (just Jalali for now)
-Version: 1.02 Beta
+Version: 1.03 Beta
 Author: Mohammad Anbarestany
 */
 
@@ -105,44 +105,44 @@ function intlCalenDashboard()
         echo "hour12: '$hour12_format',";
     }
     echo '};
-// Get all the elements with the class name "date"
-const dates = document.querySelectorAll(".date");
-
-// Loop through the elements
-for (let i = 0; i < dates.length; i++) {
-  // Get the text content of the element, which contains the Gregorian date
-  const gregorianDate = dates[i].textContent;
-
-  // Remove the Published part from the string
-  const gregorianDateWithoutPrefix = gregorianDate.replace("Published", "");
-
-  // Split the string by spaces and dashes and get an array of substrings
-  const gregorianDateComponents = gregorianDateWithoutPrefix.split(/[- ]/);
-
-  // Convert the substrings to integers and subtract 1 from the month
-	const gregorianDateComponentsDate = gregorianDateComponents[0].split("/");
-	const year = gregorianDateComponentsDate[0];
-	const month = gregorianDateComponentsDate[1] - 1;
-	const day = gregorianDateComponentsDate[2];
-	const gregorianDateComponentsTime = gregorianDateComponents[2].split(":");
-	let hour = gregorianDateComponentsTime[0].padStart(2,"0");
-	if (gregorianDateComponents[3] === "pm") {
-		let hour = gregorianDateComponentsTime[0].padStart(2,"0") + 12;
-	}
-	const minute = gregorianDateComponentsTime[1];
-
-  // Create a Date object with the Gregorian date
-  const date = new Date(Date.UTC(...[year, month, day, hour, minute]));
-
-  // Create an Intl.DateTimeFormat object with the Persian locale and calendar
-  const formatter = new Intl.DateTimeFormat("' . $locale . '", options);
-
-  // Format the date according to the locale and options
-  const jalaliDate = formatter.format(date);
-
-  // Replace the text content of the element with the jalali date
-  dates[i].textContent = jalaliDate;
-}
+    // Get all the elements with the class name "date"
+    const dates = document.querySelectorAll(".date");
+    
+    // Loop through the elements
+    for (let i = 0; i < dates.length; i++) {
+        // Get the text content of the element, which contains the Gregorian date
+        const gregorianDate = dates[i].innerHTML;
+        const gregorianDateSplited = gregorianDate.split("<br>");
+        const postStatus = gregorianDateSplited[0];
+        const gregorianDateWithoutPrefix = gregorianDateSplited[1];
+    
+        // Split the string by spaces and dashes and get an array of substrings
+        const gregorianDateComponents = gregorianDateWithoutPrefix.split(/[- ]/);
+    
+        // Convert the substrings to integers and subtract 1 from the month
+        const gregorianDateComponentsDate = gregorianDateComponents[0].split("/");
+        const year = gregorianDateComponentsDate[0];
+        const month = gregorianDateComponentsDate[1] - 1;
+        const day = gregorianDateComponentsDate[2];
+        const gregorianDateComponentsTime = gregorianDateComponents[2].split(":");
+        let hour = gregorianDateComponentsTime[0].padStart(2,"0");
+        if (gregorianDateComponents[3] === "pm") {
+            let hour = gregorianDateComponentsTime[0].padStart(2,"0") + 12;
+        }
+        const minute = gregorianDateComponentsTime[1];
+    
+        // Create a Date object with the Gregorian date
+        const date = new Date(Date.UTC(...[year, month, day, hour, minute]));
+    
+        // Create an Intl.DateTimeFormat object with the Persian locale and calendar
+        const formatter = new Intl.DateTimeFormat("' . $locale . '", options);
+    
+        // Format the date according to the locale and options
+        const jalaliDate = formatter.format(date);
+    
+        // Replace the text content of the element with the jalali date
+        dates[i].innerHTML = postStatus + "<br>" + jalaliDate;
+    }
 </script>';
 }
 add_action('admin_footer_text', 'intlCalenDashboard');
