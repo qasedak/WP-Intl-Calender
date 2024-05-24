@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: WP Intl Calendar
-Description: this plugin converts wordpress dates and times to all other calendars available in JS Intl method (just Jalali for now)
-Version: 1.03 Beta
+Description: this plugin converts wordpress dates and times to all other calendars available in JS Intl method
+Version: 1.04 Beta
 Author: Mohammad Anbarestany
 */
 
@@ -17,8 +17,11 @@ function intlCalen()
     $timeZoneName_format = get_option('intlCalen_timeZoneName_format', 'short');
     $timeZone_format = get_option('intlCalen_timeZone_format', 'Asia/Tehran');
     $hour12_format = get_option('intlCalen_hour12_format', 'false');
-    $locale = get_option('intlCalen_locale', 'fa-IR');
-
+    if (get_option('intlCalen_locale') == 'auto'){
+        $locale = str_replace('_','-',get_locale());
+    } else {
+        $locale = get_option('intlCalen_locale', 'fa-IR');
+    }
     echo '<script type="text/javascript">
 	let options = {';
     if ($weekday_format != '') {
@@ -53,8 +56,8 @@ function intlCalen()
 
     document.querySelectorAll("time").forEach(time => {
         const gregorianDate = new Date(time.dateTime);
-        const jalaliDate = formatter.format(gregorianDate);
-        time.textContent = jalaliDate;
+        const convertedDate = formatter.format(gregorianDate);
+        time.textContent = convertedDate;
     });
 </script>';
 }
@@ -73,7 +76,11 @@ function intlCalenDashboard()
     $timeZoneName_format = get_option('intlCalen_timeZoneName_format', 'short');
     $timeZone_format = get_option('intlCalen_timeZone_format', 'Asia/Tehran');
     $hour12_format = get_option('intlCalen_hour12_format', 'false');
-    $locale = get_option('intlCalen_locale', 'fa-IR');
+    if (get_option('intlCalen_locale') == 'auto'){
+        $locale = str_replace('_','-',get_locale());
+    } else {
+        $locale = get_option('intlCalen_locale', 'fa-IR');
+    }
 
     echo '<script type="text/javascript">
 	let options = {';
@@ -138,10 +145,10 @@ function intlCalenDashboard()
         const formatter = new Intl.DateTimeFormat("' . $locale . '", options);
     
         // Format the date according to the locale and options
-        const jalaliDate = formatter.format(date);
+        const convertedDate = formatter.format(date);
     
         // Replace the text content of the element with the jalali date
-        dates[i].innerHTML = postStatus + "<br>" + jalaliDate;
+        dates[i].innerHTML = postStatus + "<br>" + convertedDate;
     }
 </script>';
 }
@@ -323,6 +330,7 @@ function intlCalen_locale_callback()
 {
     $options = get_option('intlCalen_locale');
     $localeCodes = array(
+        'auto' => 'Auto',
         'fa-IR' => 'Persian (Iran)',
         'fa-AF' => 'Persian (Afghanistan)',
         // Add more locale codes here
