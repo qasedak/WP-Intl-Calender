@@ -177,23 +177,88 @@ function intlCalen_date_format_section_callback()
 function intlCalen_locale_callback()
 {
     $options = get_option('intlCalen_locale');
-    $localeCodes = array(
-        'auto' => 'Auto',
-        'fa-IR' => 'Persian (Iran)',
-        'fa-AF' => 'Persian (Afghanistan)',
-        // Add more locale codes here
-    );
-?>
-    <select name="intlCalen_locale">
+    
+    // Get WordPress available locales
+    require_once(ABSPATH . 'wp-admin/includes/translation-install.php');
+    $translations = wp_get_available_translations();
+    
+    // Define calendar systems and their corresponding locales
+    $calendar_systems = [
+        'auto' => [
+            'name' => esc_html__('Auto (WordPress Default)', 'wp-intl-calendar'),
+            'native_name' => esc_html__('Automatic', 'wp-intl-calendar')
+        ],
+        'persian' => [
+            'locales' => ['fa-IR', 'fa-AF'],
+            'name' => esc_html__('Persian Calendar', 'wp-intl-calendar'),
+            'native_name' => 'تقویم فارسی'
+        ],
+        'islamic' => [
+            'locales' => ['ar-SA', 'ar-AE', 'ar-QA', 'ar-BH', 'ar-KW'],
+            'name' => esc_html__('Islamic Calendar', 'wp-intl-calendar'),
+            'native_name' => 'التقويم الهجري'
+        ],
+        'buddhist' => [
+            'locales' => ['th-TH'],
+            'name' => __('Buddhist Calendar', 'wp-intl-calendar'),
+            'native_name' => 'ปฏิทินพุทธ'
+        ],
+        'japanese' => [
+            'locales' => ['ja-JP-u-ca-japanese'],
+            'name' => __('Japanese Calendar', 'wp-intl-calendar'),
+            'native_name' => '和暦'
+        ],
+        'chinese' => [
+            'locales' => ['zh-CN-u-ca-chinese', 'zh-TW-u-ca-chinese'],
+            'name' => __('Chinese Calendar', 'wp-intl-calendar'),
+            'native_name' => '农历'
+        ]
+    ];
+    
+    ?>
+    <select name="intlCalen_locale" id="intlCalen_locale">
         <?php
-        foreach ($localeCodes as $code => $label) {
-        ?>
-            <option value="<?php echo $code; ?>" <?php selected($options, $code); ?>><?php echo $label; ?></option>
-        <?php
+        // Add auto option first
+        printf(
+            '<option value="auto" %s>%s</option>',
+            selected($options, 'auto', false),
+            esc_html__('Auto (WordPress Default)', 'wp-intl-calendar')
+        );
+        
+        // Add calendar system groups
+        foreach ($calendar_systems as $system => $data) {
+            if ($system === 'auto') continue;
+            
+            // Add optgroup for calendar system
+            printf(
+                '<optgroup label="%s - %s">',
+                esc_attr($data['name']),
+                esc_attr($data['native_name'])
+            );
+            
+            // Add locales for this calendar system
+            foreach ($data['locales'] as $locale) {
+                $locale_data = isset($translations[$locale]) ? $translations[$locale] : null;
+                $display_name = $locale_data ? 
+                    sprintf('%s (%s)', $locale_data['native_name'], $locale) : 
+                    $locale;
+                
+                printf(
+                    '<option value="%s" %s>%s</option>',
+                    esc_attr($locale),
+                    selected($options, $locale, false),
+                    esc_html($display_name)
+                );
+            }
+            
+            echo '</optgroup>';
         }
         ?>
     </select>
-<?php
+    <p class="description">
+        <?php _e('Select your preferred calendar system and locale. The "Auto" option will use your WordPress site\'s locale setting.', 'wp-intl-calendar'); ?>
+    </p>
+    <?php
 }
 
 function intlCalen_year_format_callback()

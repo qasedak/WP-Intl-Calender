@@ -4,65 +4,98 @@ Plugin Name: WP Intl Calendar
 Description: this plugin converts wordpress dates and times to all other calendars available in JS Intl method
 Version: 1.04 Beta
 Author: Mohammad Anbarestany
+Text Domain: wp-intl-calendar
+Domain Path: /languages
 */
+
+// Load plugin text domain
+function intlCalen_load_textdomain() {
+    load_plugin_textdomain(
+        'wp-intl-calendar',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages'
+    );
+}
+add_action('plugins_loaded', 'intlCalen_load_textdomain');
 
 // Include settings file
 require_once plugin_dir_path(__FILE__) . 'settings.php';
 
+function get_calendar_options($locale) {
+    // Base options from settings
+    $options = [
+        'year' => get_option('intlCalen_year_format', '2-digit'),
+        'month' => get_option('intlCalen_month_format', 'numeric'),
+        'day' => get_option('intlCalen_day_format', 'numeric'),
+        'weekday' => get_option('intlCalen_weekday_format', 'short'),
+        'hour' => get_option('intlCalen_hour_format', 'numeric'),
+        'minute' => get_option('intlCalen_minute_format', 'numeric'),
+        'timeZoneName' => get_option('intlCalen_timeZoneName_format', 'short'),
+        'timeZone' => get_option('intlCalen_timeZone_format', get_option('timezone_string')),
+        'hour12' => filter_var(get_option('intlCalen_hour12_format', 'false'), FILTER_VALIDATE_BOOLEAN),
+    ];
+
+    // Add calendar system based on locale
+    $calendar_mapping = [
+        'fa' => 'persian',
+        'ar' => 'islamic',
+        'th' => 'buddhist',
+        'ja' => 'japanese',
+        'zh' => 'chinese'
+    ];
+
+    // Get the language code from locale
+    $lang = substr($locale, 0, 2);
+    if (isset($calendar_mapping[$lang])) {
+        $options['calendar'] = $calendar_mapping[$lang];
+    }
+
+    return $options;
+}
+
 function intlCalen()
 {
-    $year_format = get_option('intlCalen_year_format', '2-digit');
-    $month_format = get_option('intlCalen_month_format', 'numeric');
-    $day_format = get_option('intlCalen_day_format', 'numeric');
-    $weekday_format = get_option('intlCalen_weekday_format', 'short');
-    $hour_format = get_option('intlCalen_hour_format', 'numeric');
-    $minute_format = get_option('intlCalen_minute_format', 'numeric');
-    $timeZoneName_format = get_option('intlCalen_timeZoneName_format', 'short');
-    $timeZone_format = get_option('intlCalen_timeZone_format', 'Asia/Tehran');
-    $hour12_format = get_option('intlCalen_hour12_format', 'false');
-    if (get_option('intlCalen_locale') == 'auto'){
-        $locale = str_replace('_','-',get_locale());
+    // Get locale
+    if (get_option('intlCalen_locale') == 'auto') {
+        $locale = str_replace('_', '-', get_locale());
     } else {
-        $locale = get_option('intlCalen_locale', 'fa-IR');
+        $locale = get_option('intlCalen_locale', 'en-US');
     }
-    echo '<script type="text/javascript">
-	let options = {';
-    if ($weekday_format != '') {
-        echo "weekday: '$weekday_format',";
-    }
-    if ($year_format != '') {
-        echo "year: '$year_format',";
-    }
-    if ($month_format != '') {
-        echo "month: '$month_format',";
-    }
-    if ($day_format != '') {
-        echo "day: '$day_format',";
-    }
-    if ($hour_format != '') {
-        echo "hour: '$hour_format',";
-    }
-    if ($minute_format != '') {
-        echo "minute: '$minute_format',";
-    }
-    if ($timeZoneName_format != '') {
-        echo "timeZoneName: '$timeZoneName_format',";
-    }
-    if ($timeZone_format != '') {
-        echo "timeZone: '$timeZone_format',";
-    }
-    if ($hour12_format != '') {
-        echo "hour12: '$hour12_format',";
-    }
-    echo '};
-    const formatter = new Intl.DateTimeFormat("' . $locale . '", options);
 
-    document.querySelectorAll("time").forEach(time => {
-        const gregorianDate = new Date(time.dateTime);
-        const convertedDate = formatter.format(gregorianDate);
-        time.textContent = convertedDate;
-    });
-</script>';
+    // Get calendar options
+    $calendar_options = get_calendar_options($locale);
+    
+    // Generate JavaScript options object
+    $js_options = [];
+    foreach ($calendar_options as $key => $value) {
+        if ($value !== '') {
+            $js_options[] = "'$key': '$value'";
+        }
+    }
+    
+    ?>
+    <script type="text/javascript">
+    const options = {
+        <?php echo implode(",\n        ", $js_options); ?>
+    };
+    
+    try {
+        const formatter = new Intl.DateTimeFormat("<?php echo esc_js($locale); ?>", options);
+        
+        document.querySelectorAll("time").forEach(time => {
+            try {
+                const gregorianDate = new Date(time.dateTime);
+                const convertedDate = formatter.format(gregorianDate);
+                time.textContent = convertedDate;
+            } catch (error) {
+                console.warn('Date conversion failed for:', time.dateTime, error);
+            }
+        });
+    } catch (error) {
+        console.error('Calendar initialization failed:', error);
+    }
+    </script>
+    <?php
 }
 
 function intlCalenDashboard()
@@ -151,6 +184,33 @@ function intlCalenDashboard()
         dates[i].innerHTML = postStatus + "<br>" + convertedDate;
     }
 </script>';
+}
+
+function is_calendar_supported($locale) {
+    static $supported_calendars = null;
+    
+    if ($supported_calendars === null) {
+        try {
+            // Test browser support using JavaScript
+            ?>
+            <script type="text/javascript">
+            window.wpIntlCalendarSupport = {};
+            try {
+                new Intl.DateTimeFormat('<?php echo esc_js($locale); ?>', {
+                    calendar: '<?php echo esc_js($calendar); ?>'
+                });
+                window.wpIntlCalendarSupport['<?php echo esc_js($locale); ?>'] = true;
+            } catch (e) {
+                window.wpIntlCalendarSupport['<?php echo esc_js($locale); ?>'] = false;
+            }
+            </script>
+            <?php
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 // Add hooks for the main functionality
