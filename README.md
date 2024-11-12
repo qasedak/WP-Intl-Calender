@@ -1,14 +1,5 @@
 # WP Intl Calendar
 
-**Plugin Name:** WP Intl Calendar  
-**Description:** This plugin converts WordPress dates and times to various calendar systems available in the JavaScript Intl API.  
-**Version:** 1.05 Beta  
-**Author:** Mohammad Anbarestany  
-**Text Domain:** wp-intl-calendar  
-**Domain Path:** /languages
-
-## Description
-
 WP Intl Calendar is a WordPress plugin that allows you to display dates and times in different calendar systems based on the user's locale. It leverages the JavaScript Intl API to provide accurate and localized date formatting.
 
 ## Features
