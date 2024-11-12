@@ -107,6 +107,13 @@ function intlCalen()
 
 function intlCalenDashboard()
 {
+    // Use get_user_locale() for the admin area
+    if (get_option('intlCalen_locale') == 'auto') {
+        $locale = str_replace('_', '-', get_user_locale());
+    } else {
+        $locale = get_option('intlCalen_locale', 'en-US');
+    }
+
     $year_format = get_option('intlCalen_year_format', '2-digit');
     $month_format = get_option('intlCalen_month_format', 'numeric');
     $day_format = get_option('intlCalen_day_format', 'numeric');
@@ -116,11 +123,6 @@ function intlCalenDashboard()
     $timeZoneName_format = get_option('intlCalen_timeZoneName_format', 'short');
     $timeZone_format = get_option('intlCalen_timeZone_format', 'Asia/Tehran');
     $hour12_format = get_option('intlCalen_hour12_format', 'false');
-    if (get_option('intlCalen_locale') == 'auto'){
-        $locale = str_replace('_','-',get_locale());
-    } else {
-        $locale = get_option('intlCalen_locale', 'fa-IR');
-    }
 
     echo '<script type="text/javascript">
 	let options = {';
