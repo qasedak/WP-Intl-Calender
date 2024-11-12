@@ -69,9 +69,16 @@ function intlCalen()
     $js_options = [];
     foreach ($calendar_options as $key => $value) {
         if ($value !== '') {
-            $js_options[] = "'$key': '$value'";
+            if ($key === 'hour12') {
+                $js_options[] = "'hour12': " . ($value ? 'true' : 'false');
+            } else {
+                $js_options[] = "'$key': '$value'";
+            }
         }
     }
+
+    // Get the custom date selector from options
+    $date_selector = get_option('intlCalen_date_selector', '.date, time');
     
     ?>
     <script type="text/javascript">
@@ -82,13 +89,13 @@ function intlCalen()
     try {
         const formatter = new Intl.DateTimeFormat("<?php echo esc_js($locale); ?>", options);
         
-        document.querySelectorAll("time").forEach(time => {
+        document.querySelectorAll("<?php echo esc_js($date_selector); ?>").forEach(element => {
             try {
-                const gregorianDate = new Date(time.dateTime);
+                const gregorianDate = new Date(element.dateTime || element.textContent);
                 const convertedDate = formatter.format(gregorianDate);
-                time.textContent = convertedDate;
+                element.textContent = convertedDate;
             } catch (error) {
-                console.warn('Date conversion failed for:', time.dateTime, error);
+                console.warn('Date conversion failed for:', element, error);
             }
         });
     } catch (error) {

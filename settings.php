@@ -118,6 +118,21 @@ function intlCalen_settings_init()
         'intlCalen_date_format_section'
     );
 
+    // Register the custom date selector setting
+    register_setting(
+        'intlCalen_settings',
+        'intlCalen_date_selector'
+    );
+
+    // Add a settings field for the custom date selector
+    add_settings_field(
+        'intlCalen_date_selector',
+        'Date Selector',
+        'intlCalen_date_selector_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
+    );
+
     register_setting(
         'intlCalen_settings',
         'intlCalen_year_format'
@@ -371,6 +386,17 @@ function intlCalen_hour12_format_callback()
         <option value="false" <?php selected($options, 'false'); ?>>false</option>
     </select>
 <?php
+}
+
+function intlCalen_date_selector_callback()
+{
+    $selector = get_option('intlCalen_date_selector', '.date, time');
+    ?>
+    <input type="text" name="intlCalen_date_selector" value="<?php echo esc_attr($selector); ?>" class="regular-text">
+    <p class="description">
+        <?php _e('Enter CSS selectors for elements containing dates, separated by commas. Default is ".date, time".', 'wp-intl-calendar'); ?>
+    </p>
+    <?php
 }
 
 add_action('admin_menu', 'intlCalen_settings');
