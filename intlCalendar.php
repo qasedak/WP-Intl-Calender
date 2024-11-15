@@ -55,11 +55,20 @@ function get_calendar_options($locale) {
 
 function intlCalen()
 {
-    // Get locale
-    if (get_option('intlCalen_locale') == 'auto') {
+    // Get locale setting
+    $locale_setting = get_option('intlCalen_locale', 'auto');
+    
+    // Initialize locale variable
+    $locale = 'en-US'; // fallback default
+    
+    if ($locale_setting === 'browser') {
+        // We'll let JavaScript handle this with navigator.language
+        $locale = 'BROWSER_DEFAULT';
+    } elseif ($locale_setting === 'auto') {
+        // getting wordpress locale (Auto (WordPress Default))
         $locale = str_replace('_', '-', get_locale());
     } else {
-        $locale = get_option('intlCalen_locale', 'en-US');
+        $locale = $locale_setting;
     }
 
     // Get calendar options
@@ -87,7 +96,9 @@ function intlCalen()
     };
     
     try {
-        const formatter = new Intl.DateTimeFormat("<?php echo esc_js($locale); ?>", options);
+        // Handle browser locale if selected
+        const localeToUse = <?php echo $locale === 'BROWSER_DEFAULT' ? 'navigator.language' : "'".esc_js($locale)."'"; ?>;
+        const formatter = new Intl.DateTimeFormat(localeToUse, options);
         
         document.querySelectorAll("<?php echo esc_js($date_selector); ?>").forEach(element => {
             try {

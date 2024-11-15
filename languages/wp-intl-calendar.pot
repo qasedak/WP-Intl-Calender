@@ -27,4 +27,10 @@ msgid "Japanese Calendar"
 msgstr ""
 
 msgid "Chinese Calendar"
+msgstr ""
+
+msgid "Auto (Browser Default)"
+msgstr ""
+
+msgid "Browser Default"
 msgstr "" 

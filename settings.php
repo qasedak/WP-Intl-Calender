@@ -203,6 +203,10 @@ function intlCalen_locale_callback()
             'name' => esc_html__('Auto (WordPress Default)', 'wp-intl-calendar'),
             'native_name' => esc_html__('Automatic', 'wp-intl-calendar')
         ],
+        'browser' => [
+            'name' => esc_html__('Auto (Browser Default)', 'wp-intl-calendar'),
+            'native_name' => esc_html__('Browser Default', 'wp-intl-calendar')
+        ],
         'persian' => [
             'locales' => ['fa-IR', 'fa-AF'],
             'name' => esc_html__('Persian Calendar', 'wp-intl-calendar'),
