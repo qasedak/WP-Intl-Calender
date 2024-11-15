@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Intl Calendar
 Description: this plugin converts wordpress dates and times to all other calendars available in JS Intl method
-Version: 1.05 Beta
+Version: 1.06 Beta
 Author: Mohammad Anbarestany
 Text Domain: wp-intl-calendar
 Domain Path: /languages

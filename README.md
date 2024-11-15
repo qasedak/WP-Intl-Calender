@@ -9,6 +9,8 @@ WP Intl Calendar is a WordPress plugin that allows you to display dates and time
 - Customize date and time formats including year, month, day, weekday, hour, minute, and timezone.
 - Support for both 12-hour and 24-hour time formats.
 - Specify custom CSS selectors to target elements containing dates for conversion.
+- Display the date in desired language.
+- Auto-detect browser language.
 
 ## Installation
 
@@ -23,6 +25,12 @@ WP Intl Calendar is a WordPress plugin that allows you to display dates and time
 3. **Custom Date Selector**: Enter CSS selectors for elements containing dates, separated by commas. Default is `.date, time`.
 
 ## Changelog
+
+### 1.06 Beta
+- Added support for displaying the date in desired language.
+- Improved the code structure.
+- Auto-detect browser language.
+- Gregorian calendar added to the options.
 
 ### 1.05
 - Added support for custom CSS selectors to target elements containing dates.
