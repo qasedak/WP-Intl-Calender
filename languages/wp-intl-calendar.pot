@@ -33,4 +33,13 @@ msgid "Auto (Browser Default)"
 msgstr ""
 
 msgid "Browser Default"
+msgstr ""
+
+msgid "Date Display Language"
+msgstr ""
+
+msgid "Match WordPress Language"
+msgstr ""
+
+msgid "Match Selected Locale"
 msgstr "" 

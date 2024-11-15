@@ -62,32 +62,47 @@ function intlCalen()
     // Initialize locale variable
     $locale = 'en-US'; // fallback default
     $browser_default = false;
-    if ($locale_setting === 'browser') {
-        $browser_default = true;
-    } elseif ($locale_setting === 'auto') {
-        // getting wordpress locale (Auto (WordPress Default))
-        $locale = str_replace('_', '-', get_locale());
-        $browser_default = false;
-    } else {
-        $locale = $locale_setting; // used to determine calendar in options
-        $display_lang = str_replace('_', '-', get_locale()); // used to display the date in the correct language
-        $browser_default = false;
+    $display_lang = null;
+    // Determine locale and display language based on settings
+    switch ($locale_setting) {
+        case 'browser':
+            $browser_default = true;
+            $display_lang = get_option('intlCalen_display_language', 'wordpress') === 'wordpress'
+                ? str_replace('_', '-', get_locale())
+                : '${navigator.language}';
+            break;
+        case 'auto':
+            $locale = str_replace('_', '-', get_locale());
+            $display_lang = get_option('intlCalen_display_language', 'wordpress') === 'wordpress'
+                ? str_replace('_', '-', get_locale())
+                : $locale;
+            $browser_default = false;
+            break;
+        default:
+            $locale = $locale_setting;
+            // Determine display language based on setting
+            $display_lang = get_option('intlCalen_display_language', 'wordpress') === 'wordpress'
+                ? str_replace('_', '-', get_locale())
+                : $locale_setting;
+            $browser_default = false;
     }
 
     // Get calendar options
     $calendar_options = get_calendar_options($locale);
     
     // Generate JavaScript options object
-    $js_options = [];
-    foreach ($calendar_options as $key => $value) {
-        if ($value !== '') {
-            if ($key === 'hour12') {
-                $js_options[] = "'hour12': " . ($value ? 'true' : 'false');
-            } else {
-                $js_options[] = "'$key': '$value'";
-            }
-        }
-    }
+    $js_options = array_reduce(
+        array_filter($calendar_options, 'strlen'),
+        function($carry, $value) use ($calendar_options) {
+            $key = array_search($value, $calendar_options);
+            $formatted_value = $key === 'hour12' 
+                ? ($value ? 'true' : 'false')
+                : "'$value'";
+            $carry[] = "'$key': $formatted_value";
+            return $carry;
+        },
+        []
+    );
 
     // Get the custom date selector from options
     $date_selector = get_option('intlCalen_date_selector', '.date, time');
@@ -104,8 +119,10 @@ function intlCalen()
         if (<?php echo $browser_default ? 'true' : 'false'; ?>) {
             const browserFormatter = new Intl.DateTimeFormat(navigator.language);
             const resolvedOptions = browserFormatter.resolvedOptions();
-            delete options.calendar;
-            localeToUse = `<?php echo esc_js($locale); ?>-u-ca-${resolvedOptions.calendar}`;
+            if (options.calendar) {
+                delete options.calendar;
+            }
+            localeToUse = `<?php echo esc_js($display_lang); ?>-u-ca-${resolvedOptions.calendar}`;
         } else {
             localeToUse = "<?php echo esc_js($display_lang); ?>";
         }

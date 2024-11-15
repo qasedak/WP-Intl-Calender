@@ -182,6 +182,18 @@ function intlCalen_settings_init()
         'intlCalen_settings',
         'intlCalen_locale'
     );
+
+    // Add this to your settings registration section
+    register_setting('intlCalen_settings', 'intlCalen_display_language');
+
+    // Add this to your settings section
+    add_settings_field(
+        'intlCalen_display_language',
+        __('Date Display Language', 'wp-intl-calendar'),
+        'intlCalen_display_language_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
+    );
 }
 
 function intlCalen_date_format_section_callback()
@@ -406,6 +418,16 @@ function intlCalen_date_selector_callback()
     <p class="description">
         <?php _e('Enter CSS selectors for elements containing dates, separated by commas. Default is ".date, time".', 'wp-intl-calendar'); ?>
     </p>
+    <?php
+}
+
+function intlCalen_display_language_callback() {
+    $option = get_option('intlCalen_display_language', 'wordpress');
+    ?>
+    <select name="intlCalen_display_language">
+        <option value="wordpress" <?php selected($option, 'wordpress'); ?>><?php _e('Match WordPress Language', 'wp-intl-calendar'); ?></option>
+        <option value="locale" <?php selected($option, 'locale'); ?>><?php _e('Match Selected Locale', 'wp-intl-calendar'); ?></option>
+    </select>
     <?php
 }
 
