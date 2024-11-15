@@ -69,7 +69,8 @@ function intlCalen()
         $locale = str_replace('_', '-', get_locale());
         $browser_default = false;
     } else {
-        $locale = $locale_setting;
+        $locale = $locale_setting; // used to determine calendar in options
+        $display_lang = str_replace('_', '-', get_locale()); // used to display the date in the correct language
         $browser_default = false;
     }
 
@@ -106,7 +107,7 @@ function intlCalen()
             delete options.calendar;
             localeToUse = `<?php echo esc_js($locale); ?>-u-ca-${resolvedOptions.calendar}`;
         } else {
-            localeToUse = "<?php echo esc_js($locale); ?>";
+            localeToUse = "<?php echo esc_js($display_lang); ?>";
         }
         const formatter = new Intl.DateTimeFormat(localeToUse, options);
         
