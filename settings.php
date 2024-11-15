@@ -237,16 +237,22 @@ function intlCalen_locale_callback()
     ?>
     <select name="intlCalen_locale" id="intlCalen_locale">
         <?php
-        // Add auto option first
+        // Add auto options first
         printf(
             '<option value="auto" %s>%s</option>',
             selected($options, 'auto', false),
             esc_html__('Auto (WordPress Default)', 'wp-intl-calendar')
         );
         
+        printf(
+            '<option value="browser" %s>%s</option>',
+            selected($options, 'browser', false),
+            esc_html__('Auto (Browser Default)', 'wp-intl-calendar')
+        );
+        
         // Add calendar system groups
         foreach ($calendar_systems as $system => $data) {
-            if ($system === 'auto') continue;
+            if ($system === 'auto' || $system === 'browser') continue;
             
             // Add optgroup for calendar system
             printf(
