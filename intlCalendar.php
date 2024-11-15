@@ -41,7 +41,8 @@ function get_calendar_options($locale) {
         'ar' => 'islamic',
         'th' => 'buddhist',
         'ja' => 'japanese',
-        'zh' => 'chinese'
+        'zh' => 'chinese',
+        'en' => 'gregory'
     ];
 
     // Get the language code from locale
@@ -60,15 +61,16 @@ function intlCalen()
     
     // Initialize locale variable
     $locale = 'en-US'; // fallback default
-    
+    $browser_default = false;
     if ($locale_setting === 'browser') {
-        // We'll let JavaScript handle this with navigator.language
-        $locale = 'BROWSER_DEFAULT';
+        $browser_default = true;
     } elseif ($locale_setting === 'auto') {
         // getting wordpress locale (Auto (WordPress Default))
         $locale = str_replace('_', '-', get_locale());
+        $browser_default = false;
     } else {
         $locale = $locale_setting;
+        $browser_default = false;
     }
 
     // Get calendar options
@@ -97,7 +99,15 @@ function intlCalen()
     
     try {
         // Handle browser locale if selected
-        const localeToUse = <?php echo $locale === 'BROWSER_DEFAULT' ? 'navigator.language' : "'".esc_js($locale)."'"; ?>;
+        let localeToUse;
+        if (<?php echo $browser_default ? 'true' : 'false'; ?>) {
+            const browserFormatter = new Intl.DateTimeFormat(navigator.language);
+            const resolvedOptions = browserFormatter.resolvedOptions();
+            delete options.calendar;
+            localeToUse = `<?php echo esc_js($locale); ?>-u-ca-${resolvedOptions.calendar}`;
+        } else {
+            localeToUse = "<?php echo esc_js($locale); ?>";
+        }
         const formatter = new Intl.DateTimeFormat(localeToUse, options);
         
         document.querySelectorAll("<?php echo esc_js($date_selector); ?>").forEach(element => {
