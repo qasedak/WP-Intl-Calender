@@ -14,6 +14,9 @@ msgstr ""
 msgid "Auto (WordPress Default)"
 msgstr ""
 
+msgid "Gregorian Calendar"
+msgstr "" 
+
 msgid "Persian Calendar"
 msgstr ""
 
@@ -42,4 +45,4 @@ msgid "Match WordPress Language"
 msgstr ""
 
 msgid "Match Selected Locale"
-msgstr "" 
+msgstr ""

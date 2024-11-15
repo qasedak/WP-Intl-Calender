@@ -219,6 +219,11 @@ function intlCalen_locale_callback()
             'name' => esc_html__('Auto (Browser Default)', 'wp-intl-calendar'),
             'native_name' => esc_html__('Browser Default', 'wp-intl-calendar')
         ],
+        'gregory' => [
+            'locales' => ['en-US', 'en-GB', 'en-CA', 'en-AU', 'en-NZ'],
+            'name' => esc_html__('Gregorian Calendar', 'wp-intl-calendar'),
+            'native_name' => 'Gregorian Calendar'
+        ],
         'persian' => [
             'locales' => ['fa-IR', 'fa-AF'],
             'name' => esc_html__('Persian Calendar', 'wp-intl-calendar'),
