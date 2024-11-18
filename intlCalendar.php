@@ -20,7 +20,7 @@
 /**
  * Loads the plugin's text domain for internationalization.
  *
- * @since 1.05
+ * @since 1.04
  * @return void
  */
 function intlCalen_load_textdomain() {
@@ -38,7 +38,7 @@ require_once plugin_dir_path(__FILE__) . 'settings.php';
 /**
  * Gets calendar formatting options based on locale.
  *
- * @since 1.0
+ * @since 1.04
  * @param string $locale The locale identifier (e.g., 'en-US', 'fa-IR')
  * @return array Calendar formatting options for Intl.DateTimeFormat
  */
@@ -172,7 +172,7 @@ function intlCalen()
         const formatter = new Intl.DateTimeFormat(localeToUse, options);
         
         // Process all date elements matching the selector
-        document.querySelectorAll("<?php echo esc_js($date_selector); ?>").forEach(element => {
+        document.querySelectorAll("<?php echo esc_js($date_selector); if (get_option('intlCalen_auto_detect', 0)){ echo ', .wp-intl-date'; } ?>").forEach(element => {
             try {
                 // Get date string from element (data-date attribute, dateTime property, or text content)
                 const dateStr = element.getAttribute('data-date') || element.dateTime || element.textContent;
@@ -198,7 +198,7 @@ function intlCalen()
  * Initializes calendar conversion in WordPress dashboard.
  * Uses user's admin locale preferences.
  *
- * @since 1.03
+ * @since 1.02
  * @return void
  */
 function intlCalenDashboard()
@@ -291,40 +291,6 @@ function intlCalenDashboard()
 </script>';
 }
 
-/**
- * Checks if a calendar system is supported by the browser.
- *
- * @since 1.06
- * @param string $locale The locale to check
- * @return boolean True if calendar system is supported
- */
-function is_calendar_supported($locale) {
-    static $supported_calendars = null;
-    
-    if ($supported_calendars === null) {
-        try {
-            // Test browser support using JavaScript
-            ?>
-            <script type="text/javascript">
-            window.wpIntlCalendarSupport = {};
-            try {
-                new Intl.DateTimeFormat('<?php echo esc_js($locale); ?>', {
-                    calendar: '<?php echo esc_js($calendar); ?>'
-                });
-                window.wpIntlCalendarSupport['<?php echo esc_js($locale); ?>'] = true;
-            } catch (e) {
-                window.wpIntlCalendarSupport['<?php echo esc_js($locale); ?>'] = false;
-            }
-            </script>
-            <?php
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
 // Add hooks for the main functionality
 add_action('wp_footer', 'intlCalen');
 add_action('admin_footer_text', 'intlCalenDashboard');
@@ -338,7 +304,6 @@ function intlCalen_add_date_class($the_date, $format, $post) {
         $the_date
     );
 }
-add_filter('get_the_date', 'intlCalen_add_date_class', 10, 3);
 
 // Add class to modified dates
 function intlCalen_add_modified_date_class($the_modified_date, $format, $post) {
@@ -349,14 +314,12 @@ function intlCalen_add_modified_date_class($the_modified_date, $format, $post) {
         $the_modified_date
     );
 }
-add_filter('get_the_modified_date', 'intlCalen_add_modified_date_class', 10, 3);
 
 // Add class to archive dates
 function intlCalen_add_archive_date_class($link_html) {
     // Archive links already contain machine-readable dates in their URLs
     return str_replace('<a', '<a class="wp-intl-date"', $link_html);
 }
-add_filter('get_archives_link', 'intlCalen_add_archive_date_class');
 
 // Add class to comment dates
 function intlCalen_add_comment_date_class($date, $format, $comment) {
@@ -367,9 +330,8 @@ function intlCalen_add_comment_date_class($date, $format, $comment) {
         $date
     );
 }
-add_filter('get_comment_date', 'intlCalen_add_comment_date_class', 10, 3);
 
-// Add this near your other add_action calls
+// Initialize filters based on auto-detect setting
 function intlCalen_initialize_filters() {
     // Only add filters if auto-detect is enabled
     if (get_option('intlCalen_auto_detect', 0)) {

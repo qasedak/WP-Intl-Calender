@@ -47,7 +47,7 @@ msgstr ""
 msgid "Match Selected Locale"
 msgstr ""
 
-msgid "Enter CSS selectors for elements containing dates, separated by commas. Default is \".date, time, .wp-intl-date\"."
+msgid "Enter CSS selectors for elements containing dates, separated by commas. Default is \".date, time\"."
 msgstr ""
 
 msgid "Automatic Date Detection"
