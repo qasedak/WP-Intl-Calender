@@ -264,3 +264,27 @@ function is_calendar_supported($locale) {
 // Add hooks for the main functionality
 add_action('wp_footer', 'intlCalen');
 add_action('admin_footer_text', 'intlCalenDashboard');
+
+// Add class to post dates
+function intlCalen_add_date_class($the_date, $format, $post) {
+    return '<span class="wp-intl-date">' . $the_date . '</span>';
+}
+add_filter('get_the_date', 'intlCalen_add_date_class', 10, 3);
+
+// Add class to modified dates
+function intlCalen_add_modified_date_class($the_modified_date, $format, $post) {
+    return '<span class="wp-intl-date">' . $the_modified_date . '</span>';
+}
+add_filter('get_the_modified_date', 'intlCalen_add_modified_date_class', 10, 3);
+
+// Add class to archive dates
+function intlCalen_add_archive_date_class($link_html) {
+    return str_replace('<a', '<a class="wp-intl-date"', $link_html);
+}
+add_filter('get_archives_link', 'intlCalen_add_archive_date_class');
+
+// Add class to comment dates
+function intlCalen_add_comment_date_class($date, $format, $comment) {
+    return '<span class="wp-intl-date">' . $date . '</span>';
+}
+add_filter('get_comment_date', 'intlCalen_add_comment_date_class', 10, 3);

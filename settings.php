@@ -121,7 +121,12 @@ function intlCalen_settings_init()
     // Register the custom date selector setting
     register_setting(
         'intlCalen_settings',
-        'intlCalen_date_selector'
+        'intlCalen_date_selector',
+        [
+            'default' => '.date, time, .wp-intl-date',
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+        ]
     );
 
     // Add a settings field for the custom date selector
@@ -417,11 +422,11 @@ function intlCalen_hour12_format_callback()
 
 function intlCalen_date_selector_callback()
 {
-    $selector = get_option('intlCalen_date_selector', '.date, time');
+    $selector = get_option('intlCalen_date_selector', '.date, time, .wp-intl-date');
     ?>
     <input type="text" name="intlCalen_date_selector" value="<?php echo esc_attr($selector); ?>" class="regular-text">
     <p class="description">
-        <?php _e('Enter CSS selectors for elements containing dates, separated by commas. Default is ".date, time".', 'wp-intl-calendar'); ?>
+        <?php _e('Enter CSS selectors for elements containing dates, separated by commas. Default is ".date, time, .wp-intl-date".', 'wp-intl-calendar'); ?>
     </p>
     <?php
 }
