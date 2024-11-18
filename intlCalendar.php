@@ -324,14 +324,60 @@ function intlCalenDashboard()
 add_action('wp_footer', 'intlCalen');
 add_action('admin_footer_text', 'intlCalenDashboard');
 
-// Add class to post dates
+/**
+ * Cache manager for date conversions
+ */
+class IntlCalen_Cache {
+    private static $cache_group = 'intlcal_dates';
+    private static $cache_expiration = 3600; // 1 hour
+
+    /**
+     * Get cached date HTML
+     */
+    public static function get_cached_date($key) {
+        return wp_cache_get($key, self::$cache_group);
+    }
+
+    /**
+     * Set date HTML in cache
+     */
+    public static function set_cached_date($key, $value) {
+        wp_cache_set($key, $value, self::$cache_group, self::$cache_expiration);
+    }
+
+    /**
+     * Generate cache key for date
+     */
+    public static function generate_key($date, $format, $type = 'post') {
+        return "intlcal_{$type}_" . md5($date . $format . get_locale());
+    }
+}
+
+/**
+ * Add class to post dates with caching
+ */
 function intlCalen_add_date_class($the_date, $format, $post) {
+    // Generate cache key
+    $cache_key = IntlCalen_Cache::generate_key($the_date, $format, 'post');
+    
+    // Check cache
+    $cached_result = IntlCalen_Cache::get_cached_date($cache_key);
+    if ($cached_result !== false) {
+        return $cached_result;
+    }
+    
+    // Generate HTML
     $timestamp = get_post_timestamp($post);
-    return sprintf(
+    $result = sprintf(
         '<span class="wp-intl-date" data-date="%s">%s</span>',
         date('Y-m-d H:i:s', $timestamp),
         $the_date
     );
+    
+    // Cache result
+    IntlCalen_Cache::set_cached_date($cache_key, $result);
+    
+    return $result;
 }
 
 // Add class to modified dates
