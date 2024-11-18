@@ -135,8 +135,22 @@ function intlCalen()
         []
     );
 
-    // Get the custom date selector from options
-    $date_selector = get_option('intlCalen_date_selector', '.date, time');
+    // Build the selector string based on settings
+    $selectors = [];
+    
+    // Add auto-detect class if enabled
+    if (get_option('intlCalen_auto_detect', 0)) {
+        $selectors[] = '.wp-intl-date';
+    }
+    
+    // Add custom selectors if not empty
+    $custom_selector = get_option('intlCalen_date_selector', '.date, time');
+    if (!empty($custom_selector)) {
+        $selectors[] = $custom_selector;
+    }
+    
+    // Combine selectors with comma
+    $final_selector = implode(', ', array_filter($selectors));
     
     ?>
     <script type="text/javascript">
@@ -172,7 +186,7 @@ function intlCalen()
         const formatter = new Intl.DateTimeFormat(localeToUse, options);
         
         // Process all date elements matching the selector
-        document.querySelectorAll("<?php echo esc_js($date_selector); if (get_option('intlCalen_auto_detect', 0)){ echo ', .wp-intl-date'; } ?>").forEach(element => {
+        document.querySelectorAll("<?php echo esc_js($final_selector); ?>").forEach(element => {
             try {
                 // Get date string from element (data-date attribute, dateTime property, or text content)
                 const dateStr = element.getAttribute('data-date') || element.dateTime || element.textContent;
