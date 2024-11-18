@@ -49,3 +49,12 @@ msgstr ""
 
 msgid "Enter CSS selectors for elements containing dates, separated by commas. Default is \".date, time, .wp-intl-date\"."
 msgstr ""
+
+msgid "Automatic Date Detection"
+msgstr ""
+
+msgid "Automatically detect and convert WordPress date elements"
+msgstr ""
+
+msgid "When enabled, the plugin will automatically detect and convert dates from posts, comments, and archives."
+msgstr ""
