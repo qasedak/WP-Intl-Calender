@@ -9,8 +9,10 @@ WP Intl Calendar is a WordPress plugin that allows you to display dates and time
 - Customize date and time formats including year, month, day, weekday, hour, minute, and timezone.
 - Support for both 12-hour and 24-hour time formats.
 - Specify custom CSS selectors to target elements containing dates for conversion.
-- Display the date in desired language.
+- Display the date in desired language (match WordPress language or match with selected language).
 - Auto-detect browser language.
+- Automatic date detection for posts, comments, and archives.
+- Performance optimization options for better site speed.
 
 ## Installation
 
@@ -25,12 +27,24 @@ WP Intl Calendar is a WordPress plugin that allows you to display dates and time
 3. **Automatic Date Detection**: Enable this option to automatically detect and convert WordPress date elements (posts, comments, archives).
 4. **Custom Date Selector**: Enter CSS selectors for elements containing dates, separated by commas. Default is `.date, time`.
 
+### Performance Options
+
+1. **Lazy Loading**: Only convert dates when they become visible on screen. This improves initial page load performance, especially on pages with many dates.
+2. **Date Caching**: Cache converted dates to reduce server load by storing converted dates for reuse.
+3. **Admin Area Conversion**: Choose whether to enable date conversion in the WordPress admin area. (Buggy and needs more testing)
+
 ## Changelog
 
 ### 1.07 Beta
 - Added new Automatic Date Detection feature
 - Improved support for non-English WordPress installations
 - Improved date parsing reliability
+- Added performance optimization options:
+  - Lazy loading for better frontend performance
+  - Date caching to reduce server load
+  - Optional admin area conversion (Buggy and needs more testing)
+- Improved bot detection to skip processing for search engines
+- Enhanced error handling and logging
 
 ### 1.06 Beta
 - Added support for displaying the date in desired language.
@@ -49,7 +63,7 @@ WP Intl Calendar is a WordPress plugin that allows you to display dates and time
 - In locale setting, you can now select "Auto" and it will get WordPress locale automatically (better option for multi-language websites).
 
 ### 1.03
-- Dates on the WordPress dashboard post section (Partialy).
+- Dates on the WordPress dashboard post section (Partially).
 
 ### 1.0
 - Initial release with support for converting dates on the front-end.

@@ -200,7 +200,8 @@ function intlCalen()
             }
         }
 
-        // Create intersection observer
+        <?php if (get_option('intlCalen_lazy_loading', 1)): ?>
+        // Create intersection observer for lazy loading
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -215,6 +216,11 @@ function intlCalen()
         // Observe all date elements
         document.querySelectorAll("<?php echo esc_js($final_selector); ?>")
             .forEach(element => observer.observe(element));
+        <?php else: ?>
+        // Convert all dates immediately
+        document.querySelectorAll("<?php echo esc_js($final_selector); ?>")
+            .forEach(convertDate);
+        <?php endif; ?>
             
     } catch (error) {
         console.error('Calendar initialization failed:', error);
@@ -320,10 +326,6 @@ function intlCalenDashboard()
 </script>';
 }
 
-// Add hooks for the main functionality
-add_action('wp_footer', 'intlCalen');
-add_action('admin_footer_text', 'intlCalenDashboard');
-
 /**
  * Cache manager for date conversions
  */
@@ -357,6 +359,16 @@ class IntlCalen_Cache {
  * Add class to post dates with caching
  */
 function intlCalen_add_date_class($the_date, $format, $post) {
+    // Skip caching if disabled
+    if (!get_option('intlCalen_enable_caching', 1)) {
+        $timestamp = get_post_timestamp($post);
+        return sprintf(
+            '<span class="wp-intl-date" data-date="%s">%s</span>',
+            date('Y-m-d H:i:s', $timestamp),
+            $the_date
+        );
+    }
+    
     // Generate cache key
     $cache_key = IntlCalen_Cache::generate_key($the_date, $format, 'post');
     
@@ -406,14 +418,63 @@ function intlCalen_add_comment_date_class($date, $format, $comment) {
     );
 }
 
-// Initialize filters based on auto-detect setting
-function intlCalen_initialize_filters() {
-    // Only add filters if auto-detect is enabled
-    if (get_option('intlCalen_auto_detect', 0)) {
-        add_filter('get_the_date', 'intlCalen_add_date_class', 10, 3);
-        add_filter('get_the_modified_date', 'intlCalen_add_modified_date_class', 10, 3);
-        add_filter('get_archives_link', 'intlCalen_add_archive_date_class');
-        add_filter('get_comment_date', 'intlCalen_add_comment_date_class', 10, 3);
+/**
+ * Determines if date processing should occur
+ */
+function intlCalen_should_process() {
+    // Skip processing if disabled
+    if (!get_option('intlCalen_auto_detect', 0)) {
+        return false;
     }
+    
+    // Skip in admin area unless enabled
+    if (is_admin() && !get_option('intlCalen_admin_enabled', 0)) {
+        return false;
+    }
+    
+    // Skip for feeds
+    if (is_feed()) {
+        return false;
+    }
+    
+    // Skip for REST API requests
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return false;
+    }
+    
+    // Skip for bots/crawlers
+    if (isset($_SERVER['HTTP_USER_AGENT'])) {
+        $bot_patterns = array(
+            'bot', 'crawler', 'spider', 'slurp', 'googlebot',
+            'bingbot', 'yandex', 'baidu'
+        );
+        
+        foreach ($bot_patterns as $pattern) {
+            if (stripos($_SERVER['HTTP_USER_AGENT'], $pattern) !== false) {
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
+/**
+ * Initialize filters based on processing check
+ */
+function intlCalen_initialize_filters() {
+    if (!intlCalen_should_process()) {
+        return;
+    }
+    
+    // Add filters only if processing is allowed
+    add_filter('get_the_date', 'intlCalen_add_date_class', 10, 3);
+    add_filter('get_the_modified_date', 'intlCalen_add_modified_date_class', 10, 3);
+    add_filter('get_archives_link', 'intlCalen_add_archive_date_class');
+    add_filter('get_comment_date', 'intlCalen_add_comment_date_class', 10, 3);
 }
 add_action('init', 'intlCalen_initialize_filters');
+
+// Add hooks for the main functionality
+add_action('wp_footer', 'intlCalen');
+add_action('admin_footer_text', 'intlCalenDashboard');

@@ -58,3 +58,36 @@ msgstr ""
 
 msgid "When enabled, the plugin will automatically detect and convert dates from posts, comments, and archives. (May impact performance)"
 msgstr ""
+
+msgid "Performance Options"
+msgstr ""
+
+msgid "Configure performance options for date conversion. These settings can help optimize the plugin's performance on your site."
+msgstr ""
+
+msgid "Lazy Loading"
+msgstr ""
+
+msgid "Enable lazy loading of date conversions"
+msgstr ""
+
+msgid "Only convert dates when they become visible on screen. This can improve initial page load performance, especially on pages with many dates."
+msgstr ""
+
+msgid "Date Caching"
+msgstr ""
+
+msgid "Enable date conversion caching"
+msgstr ""
+
+msgid "Cache converted dates to improve performance. This reduces server load by storing converted dates for reuse."
+msgstr ""
+
+msgid "Admin Area Conversion"
+msgstr ""
+
+msgid "Enable date conversion in admin area"
+msgstr ""
+
+msgid "Convert dates in the WordPress admin area. Note: This may affect admin performance."
+msgstr ""

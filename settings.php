@@ -57,7 +57,7 @@ function intlCalen_settings_init()
 {
     add_settings_section(
         'intlCalen_date_format_section',
-        'Date Format',
+        __('Date Format', 'wp-intl-calendar'),
         'intlCalen_date_format_section_callback',
         'intlCalen_settings'
     );
@@ -233,6 +233,55 @@ function intlCalen_settings_init()
         'intlCalen_settings',
         'intlCalen_date_format_section'
     );
+
+    add_settings_section(
+        'intlCalen_performance_section',
+        __('Performance Options', 'wp-intl-calendar'),
+        'intlCalen_performance_section_callback',
+        'intlCalen_settings'
+    );
+
+    add_settings_field(
+        'intlCalen_lazy_loading',
+        __('Lazy Loading', 'wp-intl-calendar'),
+        'intlCalen_lazy_loading_callback',
+        'intlCalen_settings',
+        'intlCalen_performance_section'
+    );
+
+    add_settings_field(
+        'intlCalen_enable_caching',
+        __('Date Caching', 'wp-intl-calendar'),
+        'intlCalen_caching_callback',
+        'intlCalen_settings',
+        'intlCalen_performance_section'
+    );
+
+    add_settings_field(
+        'intlCalen_admin_enabled',
+        __('Admin Area Conversion', 'wp-intl-calendar'),
+        'intlCalen_admin_enabled_callback',
+        'intlCalen_settings',
+        'intlCalen_performance_section'
+    );
+
+    register_setting('intlCalen_settings', 'intlCalen_lazy_loading', [
+        'default' => 1,
+        'type' => 'boolean',
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ]);
+
+    register_setting('intlCalen_settings', 'intlCalen_enable_caching', [
+        'default' => 1,
+        'type' => 'boolean',
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ]);
+
+    register_setting('intlCalen_settings', 'intlCalen_admin_enabled', [
+        'default' => 0,
+        'type' => 'boolean',
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ]);
 }
 
 function intlCalen_date_format_section_callback()
@@ -505,6 +554,77 @@ function intlCalen_auto_detect_callback()
     </label>
     <p class="description">
         <?php _e('When enabled, the plugin will automatically detect and convert dates from posts, comments, and archives. (May impact performance)', 'wp-intl-calendar'); ?>
+    </p>
+    <?php
+}
+
+/**
+ * Renders the performance section description.
+ *
+ * @since 1.07
+ * @return void
+ */
+function intlCalen_performance_section_callback() {
+    ?>
+    <p>
+        <?php _e('Configure performance options for date conversion. These settings can help optimize the plugin\'s performance on your site.', 'wp-intl-calendar'); ?>
+    </p>
+    <?php
+}
+
+/**
+ * Renders the lazy loading setting field.
+ *
+ * @since 1.07
+ * @return void
+ */
+function intlCalen_lazy_loading_callback() {
+    $lazy_loading = get_option('intlCalen_lazy_loading', 1);
+    ?>
+    <label>
+        <input type="checkbox" name="intlCalen_lazy_loading" value="1" <?php checked(1, $lazy_loading); ?>>
+        <?php _e('Enable lazy loading of date conversions', 'wp-intl-calendar'); ?>
+    </label>
+    <p class="description">
+        <?php _e('Only convert dates when they become visible on screen. This can improve initial page load performance, especially on pages with many dates.', 'wp-intl-calendar'); ?>
+    </p>
+    <?php
+}
+
+/**
+ * Renders the caching setting field.
+ *
+ * @since 1.07
+ * @return void
+ */
+function intlCalen_caching_callback() {
+    $caching = get_option('intlCalen_enable_caching', 1);
+    ?>
+    <label>
+        <input type="checkbox" name="intlCalen_enable_caching" value="1" <?php checked(1, $caching); ?>>
+        <?php _e('Enable date conversion caching', 'wp-intl-calendar'); ?>
+    </label>
+    <p class="description">
+        <?php _e('Cache converted dates to improve performance. This reduces server load by storing converted dates for reuse.', 'wp-intl-calendar'); ?>
+    </p>
+    <?php
+}
+
+/**
+ * Renders the admin area conversion setting field.
+ *
+ * @since 1.07
+ * @return void
+ */
+function intlCalen_admin_enabled_callback() {
+    $admin_enabled = get_option('intlCalen_admin_enabled', 0);
+    ?>
+    <label>
+        <input type="checkbox" name="intlCalen_admin_enabled" value="1" <?php checked(1, $admin_enabled); ?>>
+        <?php _e('Enable date conversion in admin area', 'wp-intl-calendar'); ?>
+    </label>
+    <p class="description">
+        <?php _e('Convert dates in the WordPress admin area. Note: This may affect admin performance.', 'wp-intl-calendar'); ?>
     </p>
     <?php
 }
