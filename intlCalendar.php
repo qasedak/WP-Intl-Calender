@@ -185,14 +185,12 @@ function intlCalen()
         // Create the date formatter with final locale and options
         const formatter = new Intl.DateTimeFormat(localeToUse, options);
         
-        // Process all date elements matching the selector
-        document.querySelectorAll("<?php echo esc_js($final_selector); ?>").forEach(element => {
+        // Function to convert date for a single element
+        function convertDate(element) {
             try {
-                // Get date string from element (data-date attribute, dateTime property, or text content)
                 const dateStr = element.getAttribute('data-date') || element.dateTime || element.textContent;
                 const gregorianDate = new Date(dateStr);
                 
-                // Only convert valid dates
                 if (!isNaN(gregorianDate)) {
                     const convertedDate = formatter.format(gregorianDate);
                     element.textContent = convertedDate;
@@ -200,7 +198,24 @@ function intlCalen()
             } catch (error) {
                 console.warn('Date conversion failed for:', element, error);
             }
+        }
+
+        // Create intersection observer
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    convertDate(entry.target);
+                    observer.unobserve(entry.target); // Stop observing after conversion
+                }
+            });
+        }, {
+            rootMargin: '50px' // Start loading slightly before element becomes visible
         });
+
+        // Observe all date elements
+        document.querySelectorAll("<?php echo esc_js($final_selector); ?>")
+            .forEach(element => observer.observe(element));
+            
     } catch (error) {
         console.error('Calendar initialization failed:', error);
     }
