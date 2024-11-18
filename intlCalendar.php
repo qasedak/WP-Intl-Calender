@@ -1,14 +1,28 @@
 <?php
-/*
-Plugin Name: WP Intl Calendar
-Description: this plugin converts wordpress dates and times to all other calendars available in JS Intl method
-Version: 1.06 Beta
-Author: Mohammad Anbarestany
-Text Domain: wp-intl-calendar
-Domain Path: /languages
-*/
+/**
+ * WP Intl Calendar
+ *
+ * @package     WP_Intl_Calendar
+ * @author      Mohammad Anbarestany
+ * @copyright   2024 Mohammad Anbarestany
+ * @license     MIT
+ *
+ * @wordpress-plugin
+ * Plugin Name: WP Intl Calendar
+ * Description: Converts WordPress dates and times to all other calendars available in JS Intl method
+ * Version:     1.07 Beta
+ * Author:      Mohammad Anbarestany
+ * Text Domain: wp-intl-calendar
+ * Domain Path: /languages
+ * License:     MIT
+ */
 
-// Load plugin text domain
+/**
+ * Loads the plugin's text domain for internationalization.
+ *
+ * @since 1.04
+ * @return void
+ */
 function intlCalen_load_textdomain() {
     load_plugin_textdomain(
         'wp-intl-calendar',
@@ -21,6 +35,13 @@ add_action('plugins_loaded', 'intlCalen_load_textdomain');
 // Include settings file
 require_once plugin_dir_path(__FILE__) . 'settings.php';
 
+/**
+ * Gets calendar formatting options based on locale.
+ *
+ * @since 1.04
+ * @param string $locale The locale identifier (e.g., 'en-US', 'fa-IR')
+ * @return array Calendar formatting options for Intl.DateTimeFormat
+ */
 function get_calendar_options($locale) {
     // Base options from settings
     $options = [
@@ -35,18 +56,21 @@ function get_calendar_options($locale) {
         'hour12' => filter_var(get_option('intlCalen_hour12_format', 'false'), FILTER_VALIDATE_BOOLEAN),
     ];
 
-    // Add calendar system based on locale
+    // Map language codes to their corresponding calendar systems
+    // This mapping determines which calendar to use based on the locale's language code
     $calendar_mapping = [
-        'fa' => 'persian',
-        'ar' => 'islamic',
-        'th' => 'buddhist',
-        'ja' => 'japanese',
-        'zh' => 'chinese',
-        'en' => 'gregory'
+        'fa' => 'persian',   // Persian/Farsi
+        'ar' => 'islamic',   // Arabic countries
+        'th' => 'buddhist',  // Thai
+        'ja' => 'japanese',  // Japanese
+        'zh' => 'chinese',   // Chinese
+        'en' => 'gregory'    // English (Gregorian calendar)
     ];
 
-    // Get the language code from locale
+    // Extract the language code from the full locale (e.g., 'en' from 'en-US')
     $lang = substr($locale, 0, 2);
+    
+    // Apply the calendar system if a mapping exists for this language
     if (isset($calendar_mapping[$lang])) {
         $options['calendar'] = $calendar_mapping[$lang];
     }
@@ -54,6 +78,13 @@ function get_calendar_options($locale) {
     return $options;
 }
 
+/**
+ * Main function to initialize calendar conversion on frontend.
+ * Handles locale detection and JavaScript initialization.
+ *
+ * @since 1.0
+ * @return void
+ */
 function intlCalen()
 {
     // Get locale setting
@@ -104,35 +135,68 @@ function intlCalen()
         []
     );
 
-    // Get the custom date selector from options
-    $date_selector = get_option('intlCalen_date_selector', '.date, time');
+    // Build the selector string based on settings
+    $selectors = [];
+    
+    // Add auto-detect class if enabled
+    if (get_option('intlCalen_auto_detect', 0)) {
+        $selectors[] = '.wp-intl-date';
+    }
+    
+    // Add custom selectors if not empty
+    $custom_selector = get_option('intlCalen_date_selector', '.date, time');
+    if (!empty($custom_selector)) {
+        $selectors[] = $custom_selector;
+    }
+    
+    // Combine selectors with comma
+    $final_selector = implode(', ', array_filter($selectors));
     
     ?>
     <script type="text/javascript">
+    // Initialize date formatter configuration object
     const options = {
         <?php echo implode(",\n        ", $js_options); ?>
     };
     
     try {
-        // Handle browser locale if selected
+        // Handle locale selection and browser detection
         let localeToUse;
+        
         if (<?php echo $browser_default ? 'true' : 'false'; ?>) {
+            // When browser default is enabled:
+            // 1. Detect browser's calendar system
+            // 2. Create a locale string with the detected calendar
             const browserFormatter = new Intl.DateTimeFormat(navigator.language);
             const resolvedOptions = browserFormatter.resolvedOptions();
+            
+            // Remove any predefined calendar to use browser's default
             if (options.calendar) {
                 delete options.calendar;
             }
+            
+            // Construct locale string with detected calendar system
             localeToUse = `<?php echo esc_js($display_lang); ?>-u-ca-${resolvedOptions.calendar}`;
         } else {
+            // Use the configured display language
             localeToUse = "<?php echo esc_js($display_lang); ?>";
         }
+        
+        // Create the date formatter with final locale and options
         const formatter = new Intl.DateTimeFormat(localeToUse, options);
         
-        document.querySelectorAll("<?php echo esc_js($date_selector); ?>").forEach(element => {
+        // Process all date elements matching the selector
+        document.querySelectorAll("<?php echo esc_js($final_selector); ?>").forEach(element => {
             try {
-                const gregorianDate = new Date(element.dateTime || element.textContent);
-                const convertedDate = formatter.format(gregorianDate);
-                element.textContent = convertedDate;
+                // Get date string from element (data-date attribute, dateTime property, or text content)
+                const dateStr = element.getAttribute('data-date') || element.dateTime || element.textContent;
+                const gregorianDate = new Date(dateStr);
+                
+                // Only convert valid dates
+                if (!isNaN(gregorianDate)) {
+                    const convertedDate = formatter.format(gregorianDate);
+                    element.textContent = convertedDate;
+                }
             } catch (error) {
                 console.warn('Date conversion failed for:', element, error);
             }
@@ -144,6 +208,13 @@ function intlCalen()
     <?php
 }
 
+/**
+ * Initializes calendar conversion in WordPress dashboard.
+ * Uses user's admin locale preferences.
+ *
+ * @since 1.02
+ * @return void
+ */
 function intlCalenDashboard()
 {
     // Use get_user_locale() for the admin area
@@ -234,33 +305,54 @@ function intlCalenDashboard()
 </script>';
 }
 
-function is_calendar_supported($locale) {
-    static $supported_calendars = null;
-    
-    if ($supported_calendars === null) {
-        try {
-            // Test browser support using JavaScript
-            ?>
-            <script type="text/javascript">
-            window.wpIntlCalendarSupport = {};
-            try {
-                new Intl.DateTimeFormat('<?php echo esc_js($locale); ?>', {
-                    calendar: '<?php echo esc_js($calendar); ?>'
-                });
-                window.wpIntlCalendarSupport['<?php echo esc_js($locale); ?>'] = true;
-            } catch (e) {
-                window.wpIntlCalendarSupport['<?php echo esc_js($locale); ?>'] = false;
-            }
-            </script>
-            <?php
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
 // Add hooks for the main functionality
 add_action('wp_footer', 'intlCalen');
 add_action('admin_footer_text', 'intlCalenDashboard');
+
+// Add class to post dates
+function intlCalen_add_date_class($the_date, $format, $post) {
+    $timestamp = get_post_timestamp($post);
+    return sprintf(
+        '<span class="wp-intl-date" data-date="%s">%s</span>',
+        date('Y-m-d H:i:s', $timestamp),
+        $the_date
+    );
+}
+
+// Add class to modified dates
+function intlCalen_add_modified_date_class($the_modified_date, $format, $post) {
+    $timestamp = get_post_modified_timestamp($post);
+    return sprintf(
+        '<span class="wp-intl-date" data-date="%s">%s</span>',
+        date('Y-m-d H:i:s', $timestamp),
+        $the_modified_date
+    );
+}
+
+// Add class to archive dates
+function intlCalen_add_archive_date_class($link_html) {
+    // Archive links already contain machine-readable dates in their URLs
+    return str_replace('<a', '<a class="wp-intl-date"', $link_html);
+}
+
+// Add class to comment dates
+function intlCalen_add_comment_date_class($date, $format, $comment) {
+    $timestamp = strtotime($comment->comment_date);
+    return sprintf(
+        '<span class="wp-intl-date" data-date="%s">%s</span>',
+        date('Y-m-d H:i:s', $timestamp),
+        $date
+    );
+}
+
+// Initialize filters based on auto-detect setting
+function intlCalen_initialize_filters() {
+    // Only add filters if auto-detect is enabled
+    if (get_option('intlCalen_auto_detect', 0)) {
+        add_filter('get_the_date', 'intlCalen_add_date_class', 10, 3);
+        add_filter('get_the_modified_date', 'intlCalen_add_modified_date_class', 10, 3);
+        add_filter('get_archives_link', 'intlCalen_add_archive_date_class');
+        add_filter('get_comment_date', 'intlCalen_add_comment_date_class', 10, 3);
+    }
+}
+add_action('init', 'intlCalen_initialize_filters');

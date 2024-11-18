@@ -1,7 +1,19 @@
 <?php
-// All settings-related functions and hooks
-// This includes everything from line 157 to the end of the original file
+/**
+ * Settings Management for WP Intl Calendar
+ *
+ * Handles all admin settings, options pages, and calendar system configurations.
+ *
+ * @package WP_Intl_Calendar
+ * @since 1.04
+ */
 
+/**
+ * Adds the plugin settings page to WordPress admin menu.
+ *
+ * @since 1.0
+ * @return void
+ */
 function intlCalen_settings()
 {
     add_options_page(
@@ -13,6 +25,12 @@ function intlCalen_settings()
     );
 }
 
+/**
+ * Renders the settings page HTML.
+ *
+ * @since 1.0
+ * @return void
+ */
 function intlCalen_options_page()
 {
 ?>
@@ -29,6 +47,12 @@ function intlCalen_options_page()
 <?php
 }
 
+/**
+ * Initializes all plugin settings, sections, and fields.
+ *
+ * @since 1.0
+ * @return void
+ */
 function intlCalen_settings_init()
 {
     add_settings_section(
@@ -118,13 +142,16 @@ function intlCalen_settings_init()
         'intlCalen_date_format_section'
     );
 
-    // Register the custom date selector setting
     register_setting(
         'intlCalen_settings',
-        'intlCalen_date_selector'
+        'intlCalen_date_selector',
+        [
+            'default' => '.date, time',
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+        ]
     );
 
-    // Add a settings field for the custom date selector
     add_settings_field(
         'intlCalen_date_selector',
         'Date Selector',
@@ -183,14 +210,26 @@ function intlCalen_settings_init()
         'intlCalen_locale'
     );
 
-    // Add this to your settings registration section
     register_setting('intlCalen_settings', 'intlCalen_display_language');
 
-    // Add this to your settings section
     add_settings_field(
         'intlCalen_display_language',
         __('Date Display Language', 'wp-intl-calendar'),
         'intlCalen_display_language_callback',
+        'intlCalen_settings',
+        'intlCalen_date_format_section'
+    );
+
+    register_setting('intlCalen_settings', 'intlCalen_auto_detect', [
+        'default' => 0,
+        'type' => 'boolean',
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ]);
+
+    add_settings_field(
+        'intlCalen_auto_detect',
+        __('Automatic Date Detection', 'wp-intl-calendar'),
+        'intlCalen_auto_detect_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
     );
@@ -201,15 +240,22 @@ function intlCalen_date_format_section_callback()
     echo '<p>Select the format for each date component.</p>';
 }
 
+/**
+ * Renders the locale selection field with calendar system grouping.
+ * Includes support for auto-detection and various calendar systems.
+ *
+ * @since 1.04
+ * @return void
+ */
 function intlCalen_locale_callback()
 {
     $options = get_option('intlCalen_locale');
     
-    // Get WordPress available locales
+    // Load WordPress translations
     require_once(ABSPATH . 'wp-admin/includes/translation-install.php');
     $translations = wp_get_available_translations();
     
-    // Define calendar systems and their corresponding locales
+    // Define supported calendar systems and their locales
     $calendar_systems = [
         'auto' => [
             'name' => esc_html__('Auto (WordPress Default)', 'wp-intl-calendar'),
@@ -254,13 +300,14 @@ function intlCalen_locale_callback()
     ?>
     <select name="intlCalen_locale" id="intlCalen_locale">
         <?php
-        // Add auto options first
+        // Add automatic options first
         printf(
             '<option value="auto" %s>%s</option>',
             selected($options, 'auto', false),
             esc_html__('Auto (WordPress Default)', 'wp-intl-calendar')
         );
         
+        // Add browser default option
         printf(
             '<option value="browser" %s>%s</option>',
             selected($options, 'browser', false),
@@ -271,14 +318,13 @@ function intlCalen_locale_callback()
         foreach ($calendar_systems as $system => $data) {
             if ($system === 'auto' || $system === 'browser') continue;
             
-            // Add optgroup for calendar system
             printf(
                 '<optgroup label="%s - %s">',
                 esc_attr($data['name']),
                 esc_attr($data['native_name'])
             );
             
-            // Add locales for this calendar system
+            // Add locales for each calendar system
             foreach ($data['locales'] as $locale) {
                 $locale_data = isset($translations[$locale]) ? $translations[$locale] : null;
                 $display_name = $locale_data ? 
@@ -303,14 +349,20 @@ function intlCalen_locale_callback()
     <?php
 }
 
+/**
+ * Renders the year format selection field.
+ *
+ * @since 1.0
+ * @return void
+ */
 function intlCalen_year_format_callback()
 {
     $options = get_option('intlCalen_year_format');
 ?>
     <select name="intlCalen_year_format">
-        <option value="" <?php selected($options, ''); ?>>Disable</option>
-        <option value="numeric" <?php selected($options, 'numeric'); ?>>Numeric</option>
-        <option value="2-digit" <?php selected($options, '2-digit'); ?>>2-digit</option>
+        <option value="" <?php selected($options, ''); ?>><?php _e('Disable', 'wp-intl-calendar'); ?></option>
+        <option value="numeric" <?php selected($options, 'numeric'); ?>><?php _e('Numeric', 'wp-intl-calendar'); ?></option>
+        <option value="2-digit" <?php selected($options, '2-digit'); ?>><?php _e('2-digit', 'wp-intl-calendar'); ?></option>
     </select>
 <?php
 }
@@ -433,6 +485,27 @@ function intlCalen_display_language_callback() {
         <option value="wordpress" <?php selected($option, 'wordpress'); ?>><?php _e('Match WordPress Language', 'wp-intl-calendar'); ?></option>
         <option value="locale" <?php selected($option, 'locale'); ?>><?php _e('Match Selected Locale', 'wp-intl-calendar'); ?></option>
     </select>
+    <?php
+}
+
+/**
+ * Renders the automatic date detection setting field.
+ * Controls whether the plugin automatically converts WordPress date elements.
+ *
+ * @since 1.06
+ * @return void
+ */
+function intlCalen_auto_detect_callback()
+{
+    $auto_detect = get_option('intlCalen_auto_detect', 0);
+    ?>
+    <label>
+        <input type="checkbox" name="intlCalen_auto_detect" value="1" <?php checked(1, $auto_detect); ?>>
+        <?php _e('Automatically detect and convert WordPress date elements', 'wp-intl-calendar'); ?>
+    </label>
+    <p class="description">
+        <?php _e('When enabled, the plugin will automatically detect and convert dates from posts, comments, and archives. (May impact performance)', 'wp-intl-calendar'); ?>
+    </p>
     <?php
 }
 
