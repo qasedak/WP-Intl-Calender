@@ -504,7 +504,7 @@ function intlCalen_auto_detect_callback()
         <?php _e('Automatically detect and convert WordPress date elements', 'wp-intl-calendar'); ?>
     </label>
     <p class="description">
-        <?php _e('When enabled, the plugin will automatically detect and convert dates from posts, comments, and archives.', 'wp-intl-calendar'); ?>
+        <?php _e('When enabled, the plugin will automatically detect and convert dates from posts, comments, and archives. (May impact performance)', 'wp-intl-calendar'); ?>
     </p>
     <?php
 }

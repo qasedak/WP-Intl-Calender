@@ -56,5 +56,5 @@ msgstr ""
 msgid "Automatically detect and convert WordPress date elements"
 msgstr ""
 
-msgid "When enabled, the plugin will automatically detect and convert dates from posts, comments, and archives."
+msgid "When enabled, the plugin will automatically detect and convert dates from posts, comments, and archives. (May impact performance)"
 msgstr ""
