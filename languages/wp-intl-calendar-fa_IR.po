@@ -3,241 +3,258 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Intl Calendar 1.07\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-intl-calendar\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-intl-"
+"calendar\n"
 "POT-Creation-Date: 2024-11-12\n"
-"PO-Revision-Date: 2024-11-21 01:29+0330\n"
-"Last-Translator: Mohammad Anbarestany <m_anbarestany@hotmail.com>\n"
+"PO-Revision-Date: 2024-11-21 01:39+0330\n"
 "Language-Team: Mohammad Anbarestany <m_anbarestany@hotmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: WP-CLI 2.8.1\n"
+"X-Generator: Poedit 2.2\n"
 "X-Domain: wp-intl-calendar\n"
+"Last-Translator: Mohammad Anbarestany <m_anbarestany@hotmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
+"Language: fa_IR\n"
 
 #: settings.php:20
 msgid "Intl Calendar Settings"
-msgstr ""
+msgstr "تنظیمات تاریخ بین المللی"
 
 #: settings.php:21
 msgid "Intl Calendar"
-msgstr ""
+msgstr "تاریخ بین اللملی"
 
 #: settings.php:60
 msgid "Date Format"
-msgstr ""
+msgstr "فرمت تاریخ"
 
 #: settings.php:67
 msgid "Year Format"
-msgstr ""
+msgstr "فرمت سال"
 
 #: settings.php:75
 msgid "Month Format"
-msgstr ""
+msgstr "فرمت ماه"
 
 #: settings.php:83
 msgid "Day Format"
-msgstr ""
+msgstr "فرمت روز"
 
 #: settings.php:91
 msgid "Weekday Format"
-msgstr ""
+msgstr "فرمت روزهای هفته"
 
 #: settings.php:99
 msgid "Hour Format"
-msgstr ""
+msgstr "فرمت ساعت"
 
 #: settings.php:107
 msgid "Minute Format"
-msgstr ""
+msgstr "فرمت دقیقه"
 
 #: settings.php:115
 msgid "TimeZoneName Format"
-msgstr ""
+msgstr "فرمت نام منطقه زمانی"
 
 #: settings.php:123
 msgid "TimeZone Format"
-msgstr ""
+msgstr "فرمت منطقه زمانی"
 
 #: settings.php:131
 msgid "Hour12 Format"
-msgstr ""
+msgstr "فرمت 12 ساعته"
 
 #: settings.php:139
 msgid "Locale"
-msgstr ""
+msgstr "محلی (زبان)"
 
 #: settings.php:157
 msgid "Date Selector"
-msgstr ""
+msgstr "انتخابگر تاریخ ها"
 
 #: settings.php:217
 msgid "Date Display Language"
-msgstr ""
+msgstr "زبان نمایش تاریخ"
 
 #: settings.php:231
 msgid "Automatic Date Detection"
-msgstr ""
+msgstr "تشخیص خودکار تاریخ ها"
 
 #: settings.php:239
 msgid "Performance Options"
-msgstr ""
+msgstr "گزینه‌های عملکرد"
 
 #: settings.php:246
 msgid "Lazy Loading"
-msgstr ""
+msgstr "بارگذاری تنبل"
 
 #: settings.php:254
 msgid "Date Caching"
-msgstr ""
+msgstr "کش کردن"
 
 #: settings.php:262
 msgid "Admin Area Conversion"
-msgstr ""
+msgstr "تبدیل تاریخ مدیریت"
 
 #: settings.php:289
 msgid "Select the format for each date component."
-msgstr ""
+msgstr "فرمت نمایش را برای هریک از اجراء تاریخ انتخاب کنید."
 
 #: settings.php:310 settings.php:356
 msgid "Auto (WordPress Default)"
-msgstr ""
+msgstr "خودکار (پیش‌فرض وردپرس)"
 
 #: settings.php:311
 msgid "Automatic"
-msgstr ""
+msgstr "خودکار"
 
 #: settings.php:314 settings.php:363
 msgid "Auto (Browser Default)"
-msgstr ""
+msgstr "خودکار (پیش‌فرض مرورگر)"
 
 #: settings.php:315
 msgid "Browser Default"
-msgstr ""
+msgstr "پیش‌فرض مرورگر"
 
 #: settings.php:319
 msgid "Gregorian Calendar"
-msgstr ""
+msgstr "تقویم میلادی"
 
 #: settings.php:324
 msgid "Persian Calendar"
-msgstr ""
+msgstr "تقویم فارسی"
 
 #: settings.php:329
 msgid "Islamic Calendar"
-msgstr ""
+msgstr "تقویم هجری قمری"
 
 #: settings.php:334
 msgid "Buddhist Calendar"
-msgstr ""
+msgstr "تقویم بودایی"
 
 #: settings.php:339
 msgid "Japanese Calendar"
-msgstr ""
+msgstr "تقویم ژاپنی"
 
 #: settings.php:344
 msgid "Chinese Calendar"
-msgstr ""
+msgstr "تقویم چینی"
 
 #: settings.php:396
 msgid ""
 "Select your preferred calendar system and locale. The \"Auto\" option will "
 "use your WordPress site's locale setting."
-msgstr ""
+msgstr "زبان و تقویم مورد نظر خود را انتخاب کنید."
 
 #: settings.php:412 settings.php:424 settings.php:439 settings.php:451
 msgid "Disable"
-msgstr ""
+msgstr "غیرفعال"
 
 #: settings.php:413 settings.php:425 settings.php:440
 msgid "Numeric"
-msgstr ""
+msgstr "عددی"
 
 #: settings.php:414 settings.php:427 settings.php:441
 msgid "2-digit"
-msgstr ""
+msgstr "2 رقمی"
 
 #: settings.php:426 settings.php:452
 msgid "Long"
-msgstr ""
+msgstr "بلند"
 
 #: settings.php:428 settings.php:453
 msgid "Short"
-msgstr ""
+msgstr "کوتاه"
 
 #: settings.php:429 settings.php:454
 msgid "Narrow"
-msgstr ""
+msgstr "باریک"
 
 #: settings.php:525
 msgid ""
 "Enter CSS selectors for elements containing dates, separated by commas. "
 "Default is \".date, time\"."
 msgstr ""
+"سلکتورهای CSS برای المان‌های حاوی تاریخ را وارد کنید (با کاما جدا شوند). "
+"پیش‌فرض \".date, time\" است."
 
 #: settings.php:534
 msgid "Match WordPress Language"
-msgstr ""
+msgstr "تطبیق با زبان وردپرس"
 
 #: settings.php:535
 msgid "Match Selected Locale"
-msgstr ""
+msgstr "تطبیق با زبان انتخاب شده"
 
 #: settings.php:553
 msgid "Automatically detect and convert WordPress date elements"
-msgstr ""
+msgstr "تشخیص و تبدیل خودکار تاریخ‌های وردپرس"
 
 #: settings.php:556
 msgid ""
 "When enabled, the plugin will automatically detect and convert dates from "
 "posts, comments, and archives. (May impact performance)"
 msgstr ""
+"در صورت فعال بودن، افزونه به طور خودکار تاریخ‌ها را در نوشته‌ها، دیدگاه‌ها و "
+"بایگانی‌ها تشخیص و تبدیل می‌کند. (ممکن است بر عملکرد تأثیر بگذارد)"
 
 #: settings.php:570
 msgid ""
 "Configure performance options for date conversion. These settings can help "
 "optimize the plugin's performance on your site."
 msgstr ""
+"تنظیمات عملکرد برای تبدیل تاریخ را پیکربندی کنید. این تنظیمات می‌توانند به "
+"بهینه‌سازی عملکرد افزونه در سایت شما کمک کنند."
 
 #: settings.php:586
 msgid "Enable lazy loading of date conversions"
-msgstr ""
+msgstr "فعال‌سازی بارگذاری تنبل برای تبدیل تاریخ‌ها"
 
 #: settings.php:589
 msgid ""
 "Only convert dates when they become visible on screen. This can improve "
 "initial page load performance, especially on pages with many dates."
 msgstr ""
+"تبدیل تاریخ‌ها فقط زمانی که در صفحه نمایش قابل مشاهده می‌شوند. این می‌تواند "
+"عملکرد بارگذاری اولیه صفحه را بهبود بخشد، به خصوص در صفحاتی که تاریخ‌های "
+"زیادی دارند."
 
 #: settings.php:605
 msgid "Enable date conversion caching"
-msgstr ""
+msgstr "فعال‌سازی ذخیره‌سازی موقت تبدیل تاریخ‌ها"
 
 #: settings.php:608
 msgid ""
 "Cache converted dates to improve performance. This reduces server load by "
 "storing converted dates for reuse."
 msgstr ""
+"ذخیره‌سازی تاریخ‌های تبدیل شده برای بهبود عملکرد. این کار با ذخیره‌سازی "
+"تاریخ‌های تبدیل شده برای استفاده مجدد، بار سرور را کاهش می‌دهد."
 
 #: settings.php:624
 msgid "Enable date conversion in admin area"
-msgstr ""
+msgstr "فعال‌سازی تبدیل تاریخ در بخش مدیریت"
 
 #: settings.php:627
 msgid ""
 "Convert dates in the WordPress admin area. Note: This may affect admin "
 "performance."
 msgstr ""
+"تبدیل تاریخ‌ها در بخش مدیریت وردپرس. توجه: این ممکن است بر عملکرد بخش "
+"مدیریت تأثیر بگذارد."
 
 #. Plugin Name of the plugin/theme
 msgid "WP Intl Calendar"
-msgstr ""
+msgstr "تاریخ بین‌المللی وردپرس"
 
 #. Description of the plugin/theme
 msgid ""
 "Converts WordPress dates and times to all other calendars available in JS "
 "Intl method"
 msgstr ""
+"تاریخ های نمایش داده شده در وردپرس را به تقویم های دیگر تبدیل می کند."
 
 #. Author of the plugin/theme
 msgid "Mohammad Anbarestany"
-msgstr ""
+msgstr "محمد عنبرستانی"

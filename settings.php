@@ -17,8 +17,8 @@
 function intlCalen_settings()
 {
     add_options_page(
-        'Intl Calendar Settings',
-        'Intl Calendar',
+        __('Intl Calendar Settings', 'wp-intl-calendar'),
+        __('Intl Calendar', 'wp-intl-calendar'),
         'manage_options',
         'intlCalen',
         'intlCalen_options_page'
@@ -64,7 +64,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_year_format',
-        'Year Format',
+        __('Year Format', 'wp-intl-calendar'),
         'intlCalen_year_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -72,7 +72,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_month_format',
-        'Month Format',
+        __('Month Format', 'wp-intl-calendar'),
         'intlCalen_month_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -80,7 +80,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_day_format',
-        'Day Format',
+        __('Day Format', 'wp-intl-calendar'),
         'intlCalen_day_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -88,7 +88,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_Weekday_format',
-        'Weekday Format',
+        __('Weekday Format', 'wp-intl-calendar'),
         'intlCalen_Weekday_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -96,7 +96,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_hour_format',
-        'Hour Format',
+        __('Hour Format', 'wp-intl-calendar'),
         'intlCalen_hour_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -104,7 +104,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_minute_format',
-        'Minute Format',
+        __('Minute Format', 'wp-intl-calendar'),
         'intlCalen_minute_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -112,7 +112,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_timeZoneName_format',
-        'TimeZoneName Format',
+        __('TimeZoneName Format', 'wp-intl-calendar'),
         'intlCalen_timeZoneName_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -120,7 +120,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_timeZone_format',
-        'TimeZone Format',
+        __('TimeZone Format', 'wp-intl-calendar'),
         'intlCalen_timeZone_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -128,7 +128,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_hour12_format',
-        'Hour12 Format',
+        __('Hour12 Format', 'wp-intl-calendar'),
         'intlCalen_hour12_format_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -136,7 +136,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_locale',
-        'Locale',
+        __('Locale', 'wp-intl-calendar'),
         'intlCalen_locale_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -154,7 +154,7 @@ function intlCalen_settings_init()
 
     add_settings_field(
         'intlCalen_date_selector',
-        'Date Selector',
+        __('Date Selector', 'wp-intl-calendar'),
         'intlCalen_date_selector_callback',
         'intlCalen_settings',
         'intlCalen_date_format_section'
@@ -286,7 +286,7 @@ function intlCalen_settings_init()
 
 function intlCalen_date_format_section_callback()
 {
-    echo '<p>Select the format for each date component.</p>';
+    echo '<p>' . __('Select the format for each date component.', 'wp-intl-calendar') . '</p>';
 }
 
 /**
@@ -421,12 +421,12 @@ function intlCalen_month_format_callback()
     $options = get_option('intlCalen_month_format');
 ?>
     <select name="intlCalen_month_format">
-        <option value="" <?php selected($options, ''); ?>>Disable</option>
-        <option value="numeric" <?php selected($options, 'numeric'); ?>>Numeric</option>
-        <option value="long" <?php selected($options, 'long'); ?>>Long</option>
-        <option value="2-digit" <?php selected($options, '2-digit'); ?>>2-digit</option>
-        <option value="short" <?php selected($options, 'short'); ?>>short</option>
-        <option value="narrow" <?php selected($options, 'narrow'); ?>>narrow</option>
+        <option value="" <?php selected($options, ''); ?>><?php _e('Disable', 'wp-intl-calendar'); ?></option>
+        <option value="numeric" <?php selected($options, 'numeric'); ?>><?php _e('Numeric', 'wp-intl-calendar'); ?></option>
+        <option value="long" <?php selected($options, 'long'); ?>><?php _e('Long', 'wp-intl-calendar'); ?></option>
+        <option value="2-digit" <?php selected($options, '2-digit'); ?>><?php _e('2-digit', 'wp-intl-calendar'); ?></option>
+        <option value="short" <?php selected($options, 'short'); ?>><?php _e('Short', 'wp-intl-calendar'); ?></option>
+        <option value="narrow" <?php selected($options, 'narrow'); ?>><?php _e('Narrow', 'wp-intl-calendar'); ?></option>
     </select>
 <?php
 }
@@ -436,9 +436,9 @@ function intlCalen_day_format_callback()
     $options = get_option('intlCalen_day_format');
 ?>
     <select name="intlCalen_day_format">
-        <option value="" <?php selected($options, ''); ?>>Disable</option>
-        <option value="numeric" <?php selected($options, 'numeric'); ?>>Numeric</option>
-        <option value="2-digit" <?php selected($options, '2-digit'); ?>>2-digit</option>
+        <option value="" <?php selected($options, ''); ?>><?php _e('Disable', 'wp-intl-calendar'); ?></option>
+        <option value="numeric" <?php selected($options, 'numeric'); ?>><?php _e('Numeric', 'wp-intl-calendar'); ?></option>
+        <option value="2-digit" <?php selected($options, '2-digit'); ?>><?php _e('2-digit', 'wp-intl-calendar'); ?></option>
     </select>
 <?php
 }
@@ -448,10 +448,10 @@ function intlCalen_weekday_format_callback()
     $options = get_option('intlCalen_weekday_format');
 ?>
     <select name="intlCalen_weekday_format">
-        <option value="" <?php selected($options, ''); ?>>Disable</option>
-        <option value="long" <?php selected($options, 'long'); ?>>Long</option>
-        <option value="short" <?php selected($options, 'short'); ?>>short</option>
-        <option value="narrow" <?php selected($options, 'narrow'); ?>>narrow</option>
+        <option value="" <?php selected($options, ''); ?>><?php _e('Disable', 'wp-intl-calendar'); ?></option>
+        <option value="long" <?php selected($options, 'long'); ?>><?php _e('Long', 'wp-intl-calendar'); ?></option>
+        <option value="short" <?php selected($options, 'short'); ?>><?php _e('Short', 'wp-intl-calendar'); ?></option>
+        <option value="narrow" <?php selected($options, 'narrow'); ?>><?php _e('Narrow', 'wp-intl-calendar'); ?></option>
     </select>
 <?php
 }
