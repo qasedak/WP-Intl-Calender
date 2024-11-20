@@ -35,7 +35,7 @@ function intlCalen_options_page()
 {
 ?>
     <div class="wrap">
-        <h1>Intl Calendar Settings</h1>
+        <h1><?php _e('Intl Calendar Settings', 'wp-intl-calendar'); ?></h1>
         <form method="post" action="options.php">
             <?php
             settings_fields('intlCalen_settings');
