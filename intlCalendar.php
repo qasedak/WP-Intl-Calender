@@ -166,21 +166,15 @@ function intlCalen()
         let localeToUse;
         
         if (<?php echo $browser_default ? 'true' : 'false'; ?>) {
-            // When browser default is enabled:
-            // 1. Detect browser's calendar system
-            // 2. Create a locale string with the detected calendar
             const browserFormatter = new Intl.DateTimeFormat(navigator.language);
             const resolvedOptions = browserFormatter.resolvedOptions();
             
-            // Remove any predefined calendar to use browser's default
             if (options.calendar) {
                 delete options.calendar;
             }
             
-            // Construct locale string with detected calendar system
             localeToUse = `<?php echo esc_js($display_lang); ?>-u-ca-${resolvedOptions.calendar}`;
         } else {
-            // Use the configured display language
             localeToUse = "<?php echo esc_js($display_lang); ?>";
         }
         
@@ -202,24 +196,59 @@ function intlCalen()
             }
         }
 
+        // Create mutation observer to watch for new dates
+        const mutationObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                // Check for added nodes
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1) { // Element node
+                        // Check if the added node itself matches the selector
+                        if (node.matches("<?php echo esc_js($final_selector); ?>")) {
+                            <?php if (get_option('intlCalen_lazy_loading', 1)): ?>
+                            observer.observe(node);
+                            <?php else: ?>
+                            convertDate(node);
+                            <?php endif; ?>
+                        }
+                        
+                        // Check for matching elements within the added node
+                        const newDates = node.querySelectorAll("<?php echo esc_js($final_selector); ?>");
+                        newDates.forEach(element => {
+                            <?php if (get_option('intlCalen_lazy_loading', 1)): ?>
+                            observer.observe(element);
+                            <?php else: ?>
+                            convertDate(element);
+                            <?php endif; ?>
+                        });
+                    }
+                });
+            });
+        });
+
+        // Configure the observer to watch for changes in the DOM
+        mutationObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
         <?php if (get_option('intlCalen_lazy_loading', 1)): ?>
         // Create intersection observer for lazy loading
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     convertDate(entry.target);
-                    observer.unobserve(entry.target); // Stop observing after conversion
+                    observer.unobserve(entry.target);
                 }
             });
         }, {
-            rootMargin: '50px' // Start loading slightly before element becomes visible
+            rootMargin: '50px'
         });
 
-        // Observe all date elements
+        // Observe initial date elements
         document.querySelectorAll("<?php echo esc_js($final_selector); ?>")
             .forEach(element => observer.observe(element));
         <?php else: ?>
-        // Convert all dates immediately
+        // Convert all initial dates immediately
         document.querySelectorAll("<?php echo esc_js($final_selector); ?>")
             .forEach(convertDate);
         <?php endif; ?>
