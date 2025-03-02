@@ -1,21 +1,23 @@
 <?php
 /**
- * WP Intl Calendar
- *
- * @package     WP_Intl_Calendar
- * @author      Mohammad Anbarestany
- * @copyright   2024 Mohammad Anbarestany
- * @license     MIT
- *
- * @wordpress-plugin
  * Plugin Name: WP Intl Calendar
+ * Plugin URI: https://github.com/qasedak/WP-Intl-Calender/
  * Description: Converts WordPress dates and times to all other calendars available in JS Intl method
- * Version:     1.07 Beta
- * Author:      Mohammad Anbarestany
+ * Version: 1.0.7
+ * Requires at least: 5.0
+ * Requires PHP: 7.2
+ * Author: Mohammad Anbarestany
+ * Author URI: https://anbarestany.ir/
+ * License: MIT
+ * License URI: https://opensource.org/licenses/MIT
  * Text Domain: wp-intl-calendar
  * Domain Path: /languages
- * License:     MIT
+ *
+ * @package WP_Intl_Calendar
  */
+
+// Exit if accessed directly
+if (!defined('ABSPATH')) exit;
 
 /**
  * Loads the plugin's text domain for internationalization.
