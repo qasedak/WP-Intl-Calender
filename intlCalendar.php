@@ -252,6 +252,19 @@ function intlCalen()
         document.querySelectorAll("<?php echo esc_js($final_selector); ?>")
             .forEach(convertDate);
         <?php endif; ?>
+        
+        // Stop observing when user leaves page
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                mutationObserver.disconnect();
+            } else {
+                // Reconnect when page is visible again
+                mutationObserver.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        });
             
     } catch (error) {
         console.error('Calendar initialization failed:', error);
